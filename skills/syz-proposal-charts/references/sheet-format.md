@@ -22,6 +22,7 @@ and tabs all work as separators.
 | `Fees` | % | `1.50%` |
 | `Stepdown` | free text, shown as an "Autocall step-down" chip | `100%→98%→…→84%` |
 | `Size` | amount; currency signs, `’` and `,` thousands separators are fine | `€ 624’000.00` |
+| `CCY` (or `Currency`) | the product's currency; sizes are shown in it and totalled per currency (€ when absent) | `USD` |
 
 Rows whose first cell is neither a number nor `CASH` (totals, blanks) are ignored. The sheet may
 start with empty rows.
