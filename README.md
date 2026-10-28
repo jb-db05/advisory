@@ -20,6 +20,22 @@ investment-solutions decks and structured-product charts.
 - **Font sizes**: titles aside, only three sizes: 16 pt (lead lines, key
   figures), 12 pt (body text, tables) and 8 pt (notes, sources, chart labels).
 
+## Market data access
+
+Every skill starts by checking that it can reach the market data sites below,
+and asks you to allow any that are blocked before it does anything else:
+
+```
+query1.finance.yahoo.com    query2.finance.yahoo.com    finance.yahoo.com
+fc.yahoo.com                guce.yahoo.com              stooq.com
+stooq.pl                    data-api.ecb.europa.eu      www.ecb.europa.eu
+api.frankfurter.app         data.snb.ch
+```
+
+On claude.ai add them under Settings → Capabilities (allowed domains for code
+execution; an owner does this on Team and Enterprise plans). In Claude Code on
+the web, add them to the environment's network access settings.
+
 ## Layout
 
 ```

@@ -10,6 +10,60 @@ script reads it, loads five years of Yahoo Finance closes and draws everything. 
 input into a sheet, check the name matches, apply the user's changes, build, review and hand over.
 Do not compute levels or draw charts yourself.
 
+## Before you start: market data access
+
+Do this first, before reading inputs or asking anything else. The scripts fetch prices, FX rates and
+fund data from the sites below; if they are blocked, figures come out as `n/a` and the output is not
+client-ready.
+
+1. Check access (a few seconds):
+
+   ```bash
+   python3 - <<'PY'
+   import urllib.request
+   HOSTS = ["query1.finance.yahoo.com", "query2.finance.yahoo.com", "finance.yahoo.com", "fc.yahoo.com",
+            "guce.yahoo.com", "stooq.com", "stooq.pl", "data-api.ecb.europa.eu", "www.ecb.europa.eu",
+            "api.frankfurter.app", "data.snb.ch"]
+   blocked = []
+   for h in HOSTS:
+       try:
+           r = urllib.request.urlopen(urllib.request.Request(f"https://{h}/", method="HEAD"), timeout=8)
+           ok = "x-deny-reason" not in {k.lower() for k in r.headers}
+       except urllib.error.HTTPError as e:      # the site answered: reachable, unless a proxy refused it
+           ok = "x-deny-reason" not in {k.lower() for k in e.headers}
+       except Exception:
+           ok = False
+       print(("ok      " if ok else "BLOCKED ") + h)
+       blocked += [] if ok else [h]
+   print("ALL OK" if not blocked else f"{len(blocked)} blocked")
+   PY
+   ```
+
+2. If it prints `ALL OK`, say "Market data access: OK" in one line and carry on.
+3. Otherwise, stop and ask the user to set up access before going further, listing the blocked
+   domains. The full list to allow is:
+
+   ```
+   query1.finance.yahoo.com
+   query2.finance.yahoo.com
+   finance.yahoo.com
+   fc.yahoo.com
+   guce.yahoo.com
+   stooq.com
+   stooq.pl
+   data-api.ecb.europa.eu
+   www.ecb.europa.eu
+   api.frankfurter.app
+   data.snb.ch
+   ```
+
+   Where to add them: on claude.ai, in Settings → Capabilities, under code execution, add each one to
+   the allowed domains (on Team and Enterprise plans an owner does this in the organisation's
+   settings); in Claude Code on the web, in the environment's network access settings. Also suggest
+   connecting any financial data connectors they use. Re-run the check once they confirm. Go on
+   without access only if the user says so, and then add `--offline` where the script supports it
+   and list every missing figure as an open point.
+
 ## When to use
 
 - "Visualise this proposal / Proposal.csv", "chart each basket against its strike and barrier".
