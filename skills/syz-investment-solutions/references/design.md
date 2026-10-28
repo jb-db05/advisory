@@ -10,7 +10,7 @@ Read before choosing layouts, and when improving a deck.
 | Title | Template title: Nunito Bold, orange-to-amber gradient, one line, under 30 characters |
 | Section label | Italic orange line under the title: what kind of slide this is ("Market context", "Indicative terms", "Leverage") |
 | Page | White. No grey or filled text boxes. Blocks are separated by space, outlined cards (rounded, orange or ink), thin rules |
-| Text | Ink `#202945`, Nunito Sans, 11–13 pt; orange → bullets; **bold** for the key words; orange bold for the one phrase that matters |
+| Text | Ink `#202945`, Nunito Sans, 12 pt (16 pt for lead lines, 8 pt for notes and sources); orange → bullets; **bold** for the key words; orange bold for the one phrase that matters |
 | Figures | Big and bold: orange (key figures), amber in outlined boxes (limits, coupons), ink in a strip (secondary facts) |
 | Tables | Orange bold header, orange rule under it and at the end, light rules between rows, first column bold, highlighted values in orange |
 | Charts | Native and editable. Orange line with round markers for payoffs; blueberry columns with the key bars in amber / orange; data labels bold; light gridlines; no frames, no 3D |

@@ -5,7 +5,7 @@ Read this when writing messages or titles, or when changing the generator's layo
 ## One slide, one message
 
 - The **title is a short label**, one to four words: "Exposure", "Portfolio status", "NESN / NOVN / ZURN". Under 30 characters: QC warns above that.
-- The **line under the title is the takeaway**, 14 pt ink, with the figure in it: "Bank B is the largest issuer at 46%", "34 pts above the 70% barrier". The generator writes it; override with `titles` only when another message matters more, and keep it to one short line.
+- The **line under the title is the takeaway**, 12 pt ink, with the figure in it: "Bank B is the largest issuer at 46%", "34 pts above the 70% barrier". The generator writes it; override with `titles` only when another message matters more, and keep it to one short line.
 - Scope and method (dates, currency, rebasing) go in the caption, not in the title or the takeaway.
 - Get to the point: no introductions ("This slide shows…"), no sentence that repeats a figure already on the slide, no adjectives that carry no fact.
 - Summary: at most three bullets, each ≤ 15 words, each a fact plus its consequence. Example: "NVDA/MSFT/AAPL note probably redeemed on 16 Sep: CHF 210k to reinvest."
@@ -48,8 +48,8 @@ Comments rest on research, not on general knowledge. Before writing the messages
 | Page | A4 landscape 29.70 × 21.00 cm, the template's own master: logo top right, compliance footer, page number |
 | Body area | 0.73 → 11.01 in wide, 2.55 → 7.55 in high; nothing below 7.55 in (footer at 7.76 in) |
 | Titles | template title style: amber `#FFA400`, 24 pt, Nunito Bold; a short label (under 30 characters) |
-| Takeaway | the subtitle line under the title: ink, 14 pt, one line |
-| Text | ink `#202945`; body 11–14 pt; tables 11–12 pt (10 for wide tables); chart ticks and legends 10 pt; captions 8 pt grey |
+| Takeaway | the subtitle line under the title: ink, 12 pt, one line |
+| Text | ink `#202945`; titles aside, **three sizes only: 16 pt** (KPI figures, lead lines), **12 pt** (body, tables, labels), **8 pt** (chart ticks and legends, captions, sources, in grey) |
 | Boxes | none filled: white background throughout. Blocks are set off by a short coloured rule and a bold heading, not by grey boxes |
 | Font | **Nunito Sans** for all text; **Nunito Bold** for slide titles and everything on the cover page (theme fonts set to match). No other face |
 | Colours | theme order: orange `#FF6C0E`, blueberry `#4B5F80`, amber `#FFA400`, mulberry `#AC5D85`, mint `#3BAF90`, sky `#79D6FF`; red `#C62828` for barriers and losses, green `#2E7D32` for positive status, rust `#C2500A` for orange text |

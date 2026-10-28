@@ -54,7 +54,7 @@ Two slides per symbol (price with 50/200-day averages and facts; total return vs
 - **SP review**: summary KPIs; overview with status (On track / Watch / At risk / Called?); allocation by product type, issuer and underlying; per product the terms with their source, the **payoff diagram** (product with and without barrier event vs the underlying, markers for today, barrier and breakeven) and the early-redemption strip for autocalls, then performance since the initial fixing with barrier / strike / trigger lines; scenarios at maturity; assessment; sources and open points.
 - **Client review**: summary; allocation vs strategy; concentration, currency, region; **bond slide** (yield, duration, maturity ladder) when positions carry bond details; performance of the current allocation vs benchmark in the reporting currency; single-security and fund pages; structured products held (as above); assessment; sources and open points.
 - **Cross-asset proposal** (`portfolio_proposal`): the client-review pages on the proposed weights, with no amounts; performance is a labelled back-test against the benchmark; the assessment is "Why this allocation".
-- **Every deck**: short label titles of one to four words ("Portfolio status", "NESN / NOVN / ZURN"; QC warns above 30 characters) with the takeaway on the line under them in 14 pt ("34 pts above the 70% barrier"), white slides with no filled boxes, figures set off by a short coloured rule, tables at 11–12 pt, chart text at 10 pt, one-line captions. Research shows as **Research view** (product and stock pages) or **Market view** (summary), always with source and date.
+- **Every deck**: short label titles of one to four words ("Portfolio status", "NESN / NOVN / ZURN"; QC warns above 30 characters) with the takeaway on the line under them in 12 pt ("34 pts above the 70% barrier"), white slides with no filled boxes, figures set off by a short coloured rule, tables at 11–12 pt, chart text at 10 pt, one-line captions. Research shows as **Research view** (product and stock pages) or **Market view** (summary), always with source and date.
 
 ## Rules that are never relaxed
 
@@ -65,6 +65,7 @@ Two slides per symbol (price with 50/200-day averages and facts; total return vs
 - Research is quoted with its source and date, worded as that source's view; never blended into a calculated figure.
 - The template's Important Information and offices pages close every deck.
 - **Fonts**: Nunito Sans for all text; Nunito Bold for slide titles and for everything on the cover (first) page. No other face (Arial only for bullet glyphs). The renderer sets this and QC fails a deck that breaks it.
+- **Font sizes**: titles aside, only 16, 12 and 8 pt (16 for lead lines and key figures, 12 for body text and tables, 8 for notes, sources and chart labels). The renderer snaps every size to this scale and QC fails any other size.
 
 ## Example
 

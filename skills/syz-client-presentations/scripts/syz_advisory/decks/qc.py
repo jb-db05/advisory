@@ -11,12 +11,14 @@ import zipfile
 import xml.etree.ElementTree as ET
 from pathlib import Path, PurePosixPath
 
-from syz_advisory.decks.ooxml import BODY_B, EMU, FONT, PAGE_H, PAGE_W, TITLE_FONT, TITLE_MAX, text_height
+from syz_advisory.decks.ooxml import (BODY_B, EMU, FONT, PAGE_H, PAGE_W, TEXT_SIZES, TITLE_FONT, TITLE_MAX,
+                                      text_height)
 
 A = "{http://schemas.openxmlformats.org/drawingml/2006/main}"
 P = "{http://schemas.openxmlformats.org/presentationml/2006/main}"
 C = "{http://schemas.openxmlformats.org/drawingml/2006/chart}"
 R = "{http://schemas.openxmlformats.org/package/2006/relationships}"
+SIZED = {A + "rPr", A + "endParaRPr", A + "defRPr"}
 ALLOWED_FONTS = {FONT, TITLE_FONT, "+mn-lt", "+mj-lt", "+mn-cs", "+mj-cs", "Arial"}       # Arial: bullet glyphs only
 # A Python / JS null printed as a value: a text run that is only that word, or one ending a
 # label ("Coupon: None"). "None (1x)" in a sentence is English, not a leak.
@@ -75,6 +77,13 @@ def check(path: Path) -> list[tuple[str, int, str]]:
                     where = "cover" if k == 1 else "title"
                     issues.append(("error", k, f"{where} text {text[:30]!r} is not {TITLE_FONT} Bold"))
                     break
+        # House rule: titles aside, text is 16, 12 or 8 pt.
+        titles = {id(el) for sp in root.iter(P + "sp") if any(ph.get("type") in ("title", "ctrTitle") for ph in sp.iter(P + "ph"))
+                  for el in sp.iter()}
+        odd = sorted({int(el.get("sz")) / 100 for el in root.iter() if el.tag in SIZED and el.get("sz")
+                      and id(el) not in titles and int(el.get("sz")) / 100 not in TEXT_SIZES})
+        if odd:
+            issues.append(("error", k, f"text at {', '.join(f'{s:g}' for s in odd)} pt (outside titles use only {TEXT_SIZES} pt)"))
         leak = next((m for m in (LEAKS.search(t.text or "") for t in root.iter(A + "t")) if m), None)
         if leak:
             issues.append(("error", k, f"leaked placeholder or null value: {leak.group(0).strip()!r}"))
@@ -120,6 +129,10 @@ def check(path: Path) -> list[tuple[str, int, str]]:
     # 3. charts
     for n in [n for n in names if re.fullmatch(r"ppt/charts/chart\d+\.xml", n)]:
         root = ET.fromstring(parts[n])
+        odd = sorted({int(el.get("sz")) / 100 for el in root.iter() if el.tag in SIZED and el.get("sz")
+                      and int(el.get("sz")) / 100 not in TEXT_SIZES})
+        if odd:
+            issues.append(("error", 0, f"{n}: chart text at {', '.join(f'{s:g}' for s in odd)} pt (use only {TEXT_SIZES} pt)"))
         series = list(root.iter(C + "ser"))
         if not series:
             issues.append(("error", 0, f"{n}: chart without series"))

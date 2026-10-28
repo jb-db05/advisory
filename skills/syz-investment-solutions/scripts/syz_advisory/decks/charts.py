@@ -15,13 +15,13 @@ from xml.sax.saxutils import escape
 
 from openpyxl import Workbook
 
-from syz_advisory.decks.ooxml import FONT, GREY, INK, PALETTE, RULE
+from syz_advisory.decks.ooxml import FONT, GREY, INK, PALETTE, RULE, text_size
 
 C_NS = ('xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" '
         'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" '
         'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"')
 EXCEL_EPOCH = date(1899, 12, 30)
-AXIS_PT = 10
+AXIS_PT = 8          # the house note size (TEXT_SIZES)
 
 
 def _col(i: int) -> str:
@@ -41,7 +41,7 @@ def _workbook(header: list[str], rows: list[list]) -> bytes:
 
 
 def _txpr(size: float = 9, color: str = INK, bold: bool = False) -> str:
-    return (f'<c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="{int(size * 100)}" b="{int(bold)}">'
+    return (f'<c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="{text_size(size) * 100}" b="{int(bold)}">'
             f'<a:solidFill><a:srgbClr val="{color}"/></a:solidFill><a:latin typeface="{FONT}"/></a:defRPr></a:pPr>'
             f'<a:endParaRPr lang="en-GB"/></a:p></c:txPr>')
 

@@ -153,7 +153,7 @@ def cover(ctx: Context, title: str) -> None:
     s = ctx.deck.add("Cover Slide 2")
     s.placeholder('<p:ph type="ctrTitle"/>', [f"<a:p>{title_run(title)}</a:p>"], "Title")
     intro = f"{ctx.case.get('client', 'Client')} · {ctx.as_of:%d %B %Y}"
-    s.placeholder('<p:ph type="body" sz="quarter" idx="13"/>', [f"<a:p>{title_run(intro)}</a:p>"], "Intro")
+    s.placeholder('<p:ph type="body" sz="quarter" idx="13"/>', [f"<a:p>{title_run(intro, 12)}</a:p>"], "Intro")
     s.picture_placeholder(14, ctx.deck.cover_image)
     s.title = title
 
@@ -172,9 +172,9 @@ def fill_agenda(ctx: Context, s: Slide) -> None:
             seen.append((name, ctx.deck.slides.index(slide) + 1))
     for k, (name, page) in enumerate(seen[:5]):
         s.placeholder(f'<p:ph type="body" sz="quarter" idx="{20 + k}"/>',
-                      [f'<a:p><a:r><a:rPr lang="en-GB" dirty="0"/><a:t>{escape(name)}</a:t></a:r></a:p>'], "Section")
+                      [f'<a:p><a:r><a:rPr lang="en-GB" sz="1200" dirty="0"/><a:t>{escape(name)}</a:t></a:r></a:p>'], "Section")
         s.placeholder(f'<p:ph type="body" sz="quarter" idx="{25 + k}"/>',
-                      [f'<a:p><a:r><a:rPr lang="en-GB" dirty="0"/><a:t>{page}</a:t></a:r></a:p>'], "Page")
+                      [f'<a:p><a:r><a:rPr lang="en-GB" sz="1200" dirty="0"/><a:t>{page}</a:t></a:r></a:p>'], "Page")
 
 
 def sources_slide(ctx: Context, extra_method: list[str]) -> None:
@@ -499,8 +499,8 @@ def sp_product_pages(ctx: Context, p: Position, section: str) -> None:
         s.heading(x, BODY_T, w, "Payoff at maturity")
         s.chart(x, BODY_T + 0.35, w, chart_h, xml, wb)
         y = BODY_T + 0.35 + chart_h + 0.02
-        s.caption(x, y, w, "Return incl. coupons vs the worst underlying's final level; before fees, taxes and issuer risk."
-                  + (f" Breakeven {be:.0%}." if be else ""))
+        y += s.caption(x, y, w, "Return incl. coupons vs the worst underlying's final level; before fees, taxes and issuer risk."
+                       + (f" Breakeven {be:.0%}." if be else "")) - 0.3
         if calls:
             head = ["Early redemption"] + [f"{month(c['date']) if c['date'] else str(c['months']) + 'M'}" for c in calls]
             row1 = ["Trigger"] + [pct(c["trigger"], 0) for c in calls]

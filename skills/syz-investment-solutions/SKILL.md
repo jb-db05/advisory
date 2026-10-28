@@ -88,6 +88,7 @@ Build with `--preview`, then:
   client uses a pseudonym (`C-0042`).
 - The disclaimer and closing pages are added by the renderer; never remove them.
 - **Fonts**: Nunito Sans for all text; Nunito Bold for slide titles and for everything on the cover (first) page. No other face (Arial only for bullet glyphs). The renderer sets this and QC fails a deck that breaks it.
+- **Font sizes**: titles aside, only 16, 12 and 8 pt (16 for lead lines and key figures, 12 for body text and tables, 8 for notes, sources and chart labels). The renderer snaps every size to this scale and QC fails any other size.
 - Not for: reviews of a client's products or portfolio (`syz-client-presentations`), proposal
   decks built from a basket sheet (`syz-portfolio-proposal`), one-page technical reviews
   (`syz-technical-review`).

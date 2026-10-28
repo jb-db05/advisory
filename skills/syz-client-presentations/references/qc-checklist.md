@@ -29,7 +29,7 @@ Read this before handing a deck over. Tick every line; anything unresolved goes 
 - [ ] One message per slide: a short label title (no QC "title is" warning) and a takeaway line with the figure
 - [ ] Messages one line each, three per box at most; no sentence repeating a figure on the slide
 - [ ] No orphan slides (an empty assessment slide means messages are missing — add them or accept that it is skipped)
-- [ ] No filled grey boxes; tables readable (≥ 10 pt where possible), no text over the footer, one-line captions
+- [ ] No filled grey boxes; tables readable (12 pt where possible), no text over the footer, one-line captions
 
 ## Research
 

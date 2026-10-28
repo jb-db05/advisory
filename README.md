@@ -17,6 +17,8 @@ investment-solutions decks and structured-product charts.
 - **Fonts**: Nunito Sans for all text. Nunito Bold for slide titles and for
   everything on the cover (first) page. No other face. The deck renderers set
   this and their QC fails any deck that breaks it.
+- **Font sizes**: titles aside, only three sizes: 16 pt (lead lines, key
+  figures), 12 pt (body text, tables) and 8 pt (notes, sources, chart labels).
 
 ## Layout
 

@@ -40,7 +40,7 @@ from xml.sax.saxutils import escape
 from syz_advisory.decks import charts as C
 from syz_advisory.decks.ooxml import (AMBER, BLUEBERRY, BODY_B, BODY_L, BODY_R, BODY_W, FONT, GREY, INK, MINT, ORANGE,
                                       PALETTE, RULE, T_GREEN, T_RED, T_RULE, TITLE_FONT, TITLE_MAX, Deck, Run, Slide, emu,
-                                      fit_size, text_height, title_run)
+                                      fit_size, text_height, text_size, title_run)
 
 TOP = 2.45                     # body top under the section label
 GAP = 0.35                     # between columns and blocks
@@ -96,7 +96,7 @@ def paragraph(rs: list[Run], *, bullet: str | None = None, bullet_color: str = O
         ind, bu = ' marL="0" indent="0"', "<a:buNone/>"
     return (f'<a:p><a:pPr algn="{align}"{ind}><a:lnSpc><a:spcPct val="105000"/></a:lnSpc>'
             f'<a:spcBef><a:spcPts val="{int(space_before * 100)}"/></a:spcBef><a:spcAft><a:spcPts val="{int(space_after * 100)}"/></a:spcAft>'
-            f'{bu}</a:pPr>{"".join(r.xml() for r in rs)}<a:endParaRPr lang="en-GB" sz="{int(size * 100)}" dirty="0"/></a:p>')
+            f'{bu}</a:pPr>{"".join(r.xml() for r in rs)}<a:endParaRPr lang="en-GB" sz="{text_size(size) * 100}" dirty="0"/></a:p>')
 
 
 def shape(s: Slide, x: float, y: float, w: float, h: float, paras: list[str] | None = None, *, geom: str = "rect",
@@ -233,7 +233,7 @@ def draw(b: Build, s: Slide, block: dict, x: float, y: float, w: float, h: float
 
 def _text(b, s, block, x, y, w, h, page):
     items = _items(block)
-    size = fit(items, w - 0.3, h * 0.9, block.get("size", 12), block.get("floor", 9.5))
+    size = fit(items, w - 0.3, h, block.get("size", 12), block.get("floor", 9.5))   # h is sized for 12 pt (natural)
     shape(s, x, y, w, h, text_paras(items, size, bullets=block.get("bullets", True)), inset=0.02)
     words = sum(len(plain(i).split()) for i in items)
     if words > block.get("max_words", 90):
@@ -554,12 +554,12 @@ def _image(b, s, block, x, y, w, h, page):
 
 # ------------------------------------------------------------------ slides
 def _title(s: Slide, text: str) -> None:
-    size = fit_size([text], BODY_W, 0.77, 30, 20, bold=True, inset=0.05)
+    size = fit_size([text], BODY_W, 0.77, 30, 20, bold=True, inset=0.05, title=True)
     s.set_title(text, size)
 
 
 def _section(s: Slide, text: str) -> None:
-    run = (f'<a:r><a:rPr lang="en-GB" sz="2000" b="0" i="1" dirty="0"><a:solidFill><a:srgbClr val="{ORANGE}"/></a:solidFill>'
+    run = (f'<a:r><a:rPr lang="en-GB" sz="1600" b="0" i="1" dirty="0"><a:solidFill><a:srgbClr val="{ORANGE}"/></a:solidFill>'
            f'<a:latin typeface="{FONT}"/></a:rPr><a:t>{escape(text)}</a:t></a:r>')
     s.placeholder('<p:ph type="body" sz="quarter" idx="14"/>', [f"<a:p>{run}</a:p>"], "Subtitle")
 
@@ -647,7 +647,7 @@ def content_slide(b: Build, spec: dict, page: int) -> None:
 def cover(b: Build, spec: dict) -> None:
     s = b.deck.add("Cover Slide 2")
     lines = (spec.get("title") or "Investment Solutions\nby your Advisory Team").split("\n")
-    size = fit_size(lines, 4.9, 1.35, 26, 18, bold=True, inset=0.1)
+    size = fit_size(lines, 4.9, 1.35, 26, 18, bold=True, inset=0.1, title=True)
     paras = "".join(f"<a:p>{title_run(l, size)}</a:p>" for l in lines)
     sid = s._id()      # the layout's title box is 3.8 in wide: widened to the photo's edge, as in the reference decks
     s.shapes.append(
@@ -661,7 +661,7 @@ def cover(b: Build, spec: dict) -> None:
     except ValueError:
         pass
     s.placeholder('<p:ph type="body" sz="quarter" idx="13"/>',
-                  [f"<a:p>{title_run(when)}</a:p>"], "Intro")
+                  [f"<a:p>{title_run(when, 12)}</a:p>"], "Intro")
     got = _load_image(b, spec["cover_image"], 1) if spec.get("cover_image") else None
     if got:
         target, (pw, ph) = got

@@ -60,7 +60,7 @@ All blocks take an optional `"heading"` (bold line above; `"heading_color": "ora
 ```json
 {"type": "text", "items": ["**Bold** words, __orange emphasis__", "- a sub-point", "> a plain paragraph"], "size": 12}
 ```
-Orange → bullets. `"bullets": false` for plain paragraphs. The size shrinks to fit (floor 9.5 pt).
+Orange → bullets. `"bullets": false` for plain paragraphs. The size snaps to the house scale (16, 12 or 8 pt) and steps down it to fit.
 Warns above 90 words.
 
 ### card / cards

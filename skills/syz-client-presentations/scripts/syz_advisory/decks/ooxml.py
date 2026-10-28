@@ -43,7 +43,9 @@ T_HEAD, T_RULE = "7A8494", "D9DCE1"
 T_RED, T_AMBER, T_GREEN = "E45B5E", "FFA400", "3BAF90"
 PALETTE = [ORANGE, BLUEBERRY, AMBER, MULBERRY, MINT, SKY, GOLD, INK]
 TITLE_MAX = 30              # characters: titles are short labels; the message is the subtitle
-SUBTITLE_PT = 14
+# House rule: titles aside, text comes in three sizes only -- 16 (lead), 12 (body), 8 (notes).
+TEXT_SIZES = (16, 12, 8)
+SUBTITLE_PT = 12
 
 NS = ('xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" '
       'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" '
@@ -94,9 +96,19 @@ def text_height(paragraphs: list[str], w: float, size: float, bold: bool = False
     return lines * size * spacing / 72 + max(0, len(paragraphs) - 1) * size * 0.45 / 72 + inset
 
 
+def text_size(size: float) -> int:
+    """The house size nearest `size` (ties go to the larger one: fit_size steps down if it must)."""
+    return min(TEXT_SIZES, key=lambda s: (abs(s - size), -s))
+
+
 def fit_size(paragraphs: list[str], w: float, h: float, start: float, floor: float = 8.0,
-             bold: bool = False, inset: float = 0.08) -> float:
-    """Largest size (pt, steps of 0.5) at which the paragraphs fit the box."""
+             bold: bool = False, inset: float = 0.08, title: bool = False) -> float:
+    """Largest size at which the paragraphs fit the box: one of TEXT_SIZES, no larger than
+    the house size nearest `start` (the smallest if nothing fits). Titles (`title=True`)
+    are free of the scale and step down by 0.5 pt from `start` to `floor`."""
+    if not title:
+        steps = [s for s in TEXT_SIZES if s <= text_size(start)]
+        return next((s for s in steps if text_height(paragraphs, w, s, bold, inset) <= h), steps[-1])
     size = start
     while size > floor:
         if text_height(paragraphs, w, size, bold, inset) <= h:
@@ -116,13 +128,14 @@ class Run:
     font: str = FONT
 
     def xml(self) -> str:
-        attrs = f'lang="en-GB" sz="{int(self.size * 100)}" b="{int(self.bold)}" i="{int(self.italic)}" dirty="0"'
+        attrs = f'lang="en-GB" sz="{text_size(self.size) * 100}" b="{int(self.bold)}" i="{int(self.italic)}" dirty="0"'
         return (f'<a:r><a:rPr {attrs}><a:solidFill><a:srgbClr val="{self.color}"/></a:solidFill>'
                 f'<a:latin typeface="{self.font}"/><a:cs typeface="{self.font}"/></a:rPr><a:t>{escape(self.text)}</a:t></a:r>')
 
 
 def title_run(text: str, size: float | None = None) -> str:
-    """A run in the title face: Nunito Bold. Used for slide titles and everything on the cover."""
+    """A run in the title face: Nunito Bold. Used for slide titles and everything on the cover.
+    The size is taken as given: callers outside a title pass a TEXT_SIZES value."""
     sz = f' sz="{int(size * 100)}"' if size else ""
     return (f'<a:r><a:rPr lang="en-GB"{sz} b="1" dirty="0"><a:latin typeface="{TITLE_FONT}"/>'
             f'<a:cs typeface="{TITLE_FONT}"/></a:rPr><a:t>{escape(text)}</a:t></a:r>')
@@ -136,7 +149,7 @@ def para(runs: list[Run] | Run | str, align: str = "l", bullet: bool = False, sp
         runs = [runs]
     bu = ('<a:buFont typeface="Arial"/><a:buChar char="&#8226;"/>' if bullet else "<a:buNone/>")
     indent = ' marL="171450" indent="-171450"' if bullet else ' marL="0" indent="0"'
-    sz = int((runs[0].size if runs else size) * 100)
+    sz = text_size(runs[0].size if runs else size) * 100
     body = "".join(r.xml() for r in runs)
     return (f'<a:p><a:pPr algn="{align}"{indent}><a:spcAft><a:spcPts val="{int(space_after * 100)}"/></a:spcAft>{bu}</a:pPr>'
             f'{body}<a:endParaRPr lang="en-GB" sz="{sz}" dirty="0"/></a:p>')
@@ -178,12 +191,12 @@ class Slide:
         """The slide's short label, in the layout's title placeholder (amber, 24 pt): one to four
         words, under TITLE_MAX characters (QC warns above that). The message goes in the subtitle."""
         self.title = text
-        size = size or fit_size([text], BODY_W, 0.95, 24, 16, bold=True, inset=0.05)
+        size = size or fit_size([text], BODY_W, 0.95, 24, 16, bold=True, inset=0.05, title=True)
         self.placeholder('<p:ph type="title"/>', [f"<a:p>{title_run(text, size)}</a:p>"], "Title")
 
     def set_subtitle(self, text: str, idx: int = 14) -> None:
         """The slide's takeaway, one line under the title, in ink."""
-        size = fit_size([text], BODY_W, 0.3, SUBTITLE_PT, 11, inset=0.0)
+        size = fit_size([text], BODY_W, 0.3, SUBTITLE_PT, 8, inset=0.0)
         run = (f'<a:r><a:rPr lang="en-GB" sz="{int(size * 100)}" dirty="0"><a:solidFill><a:srgbClr val="{INK}"/></a:solidFill>'
                f'<a:latin typeface="{FONT}"/></a:rPr><a:t>{escape(text)}</a:t></a:r>')
         self.placeholder(f'<p:ph type="body" sz="quarter" idx="{idx}"/>', [f"<a:p>{run}</a:p>"], "Subtitle")
@@ -240,10 +253,11 @@ class Slide:
     @staticmethod
     def kpi_size(w: float, h: float, value: str, label: str, note: str = "") -> float:
         """Largest value size (pt) that leaves room for the label and note in a tile."""
-        rest = text_height([label], w, 10, inset=0.02) - 0.02 + 10 * 0.45 / 72
+        rest = text_height([label], w, 12, inset=0.02) - 0.02 + 12 * 0.45 / 72
         if note:
             rest += text_height([note], w, 8, inset=0.02) - 0.02 + 8 * 0.45 / 72
-        return fit_size([value], w, h - Slide.KPI_TOP - rest - 0.04, 26, 11, bold=True, inset=0.02)
+        # 0.1 in: the gap after the figure (0.3 of its size) and a small margin.
+        return fit_size([value], w, h - Slide.KPI_TOP - rest - 0.1, 26, 11, bold=True, inset=0.02)
 
     def kpi(self, x: float, y: float, w: float, h: float, value: str, label: str,
             accent: str = ORANGE, note: str = "", vsize: float | None = None) -> None:
@@ -253,7 +267,7 @@ class Slide:
         self.box(x, y, min(0.6, w), 0.05, fill=accent, name="Accent")
         vsize = vsize or self.kpi_size(w, h, value, label, note)
         lines = [para([Run(value, vsize, True, INK)], space_after=vsize * 0.3),
-                 para([Run(label, 10, False, BLUEBERRY)], space_after=0)]
+                 para([Run(label, 12, False, BLUEBERRY)], space_after=0)]
         if note:
             lines.append(para([Run(note, 8, False, GREY)], space_after=0))
         self.box(x, y + self.KPI_TOP, w, h - self.KPI_TOP, lines, anchor="t", inset=0.02, name="KPI")
@@ -351,10 +365,13 @@ class Slide:
             f'<p:spPr><a:xfrm><a:off x="{emu(x)}" y="{emu(y)}"/><a:ext cx="{emu(w)}" cy="{emu(h)}"/></a:xfrm>'
             f'<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>')
 
-    def caption(self, x: float, y: float, w: float, text: str, size: float = 8) -> None:
-        """Source / method note under a chart or table: one short line, two at most."""
-        size = fit_size([text], w, 0.3, size, 6.5, inset=0.02)
-        self.box(x, y, w, 0.3, [para([Run(text, size, False, GREY)], space_after=0)], inset=0.02)
+    def caption(self, x: float, y: float, w: float, text: str, size: float = 8) -> float:
+        """Source / method note under a chart or table: one short line, two at most. At the
+        smallest house size (8 pt) a long note takes a second line rather than shrinking."""
+        size = fit_size([text], w, 0.3, size, 8, inset=0.02)
+        h = max(0.3, min(text_height([text], w, size, inset=0.02) + 0.02, 0.42))
+        self.box(x, y, w, h, [para([Run(text, size, False, GREY)], space_after=0)], inset=0.02)
+        return h
 
     def notes_box(self, x: float, y: float, w: float, h: float, head: str, items: list[tuple[str, str]],
                   accent: str = MINT, size: float = 11, floor: float = 8.5) -> float:
