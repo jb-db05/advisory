@@ -15,6 +15,8 @@ investment-solutions decks and structured-product charts.
 ## Layout
 
 ```
+templates/
+  S00_template.pptx # master SYZ PowerPoint template
 skills/
   <skill-name>/
     SKILL.md        # frontmatter (name, description) and instructions
@@ -29,6 +31,10 @@ carry their own copy of `scripts/syz_advisory` and `scripts/pypdf`. If you
 change the shared code, update both copies.
 `syz-investment-solutions` has two extra modules, `decks/extract.py` and
 `decks/solutions.py`.
+
+The master PowerPoint template is `templates/S00_template.pptx`. Both deck
+skills carry an identical copy in `assets/`. If the template changes, replace
+all three files.
 
 ## Installing a skill
 
