@@ -195,7 +195,7 @@ def price_png(market: Market, symbol: str, out: Path, *, start: date, bench: str
     shown = price.since(start)
     n = len(shown.closes)
     xs = [date.fromisoformat(d) for d in shown.dates]
-    plt.rcParams.update({"font.family": ["Open Sans", "Nunito Sans", "DejaVu Sans"], "font.size": 9,
+    plt.rcParams.update({"font.family": ["Nunito Sans", "DejaVu Sans"], "font.size": 9,
                          "axes.edgecolor": "#A6A9B5", "axes.labelcolor": "#202945", "xtick.color": "#8C8C8C",
                          "ytick.color": "#8C8C8C", "axes.spines.top": False, "axes.spines.right": False})
     fig, ax = plt.subplots(figsize=(10, 4.6), dpi=150)
@@ -204,7 +204,8 @@ def price_png(market: Market, symbol: str, out: Path, *, start: date, bench: str
     ax.plot(xs, moving_average(price.closes, 200)[-n:], color="#8C8C8C", lw=1.2, ls="--", label="200-day average")
     ax.grid(axis="y", color="#E3E5EB", lw=0.6)
     ax.legend(frameon=False, loc="upper left", fontsize=8)
-    ax.set_title(f"{symbol} - daily close", loc="left", color="#FFA400", fontsize=13, fontweight="bold")
+    ax.set_title(f"{symbol} - daily close", loc="left", color="#FFA400", fontsize=13, fontweight="bold",
+                 fontfamily=["Nunito", "Nunito Sans", "DejaVu Sans"])
     fig.text(0.01, 0.01, "Source: Yahoo Finance, unadjusted daily closes; moving averages calculated.", color="#8C8C8C",
              fontsize=7, style="italic")
     fig.tight_layout(rect=(0, 0.03, 1, 1))

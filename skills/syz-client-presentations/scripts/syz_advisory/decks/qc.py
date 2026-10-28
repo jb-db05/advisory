@@ -11,13 +11,13 @@ import zipfile
 import xml.etree.ElementTree as ET
 from pathlib import Path, PurePosixPath
 
-from syz_advisory.decks.ooxml import BODY_B, EMU, FONT, PAGE_H, PAGE_W, TITLE_MAX, text_height
+from syz_advisory.decks.ooxml import BODY_B, EMU, FONT, PAGE_H, PAGE_W, TITLE_FONT, TITLE_MAX, text_height
 
 A = "{http://schemas.openxmlformats.org/drawingml/2006/main}"
 P = "{http://schemas.openxmlformats.org/presentationml/2006/main}"
 C = "{http://schemas.openxmlformats.org/drawingml/2006/chart}"
 R = "{http://schemas.openxmlformats.org/package/2006/relationships}"
-ALLOWED_FONTS = {FONT, "+mn-lt", "+mj-lt", "+mn-cs", "+mj-cs", "Arial"}       # Arial: bullet glyphs only
+ALLOWED_FONTS = {FONT, TITLE_FONT, "+mn-lt", "+mj-lt", "+mn-cs", "+mj-cs", "Arial"}       # Arial: bullet glyphs only
 # A Python / JS null printed as a value: a text run that is only that word, or one ending a
 # label ("Coupon: None"). "None (1x)" in a sentence is English, not a leak.
 LEAKS = re.compile(r"^\s*(None|nan|NaN|null|undefined)\s*$|:\s*(None|nan|NaN|null|undefined)\b|\{\{|\}\}|Traceback")
@@ -63,7 +63,18 @@ def check(path: Path) -> list[tuple[str, int, str]]:
         content_page = b'name="One Content"' in layout_xml
         for rpr in root.iter():
             if rpr.tag in (A + "latin", A + "cs") and rpr.get("typeface") not in ALLOWED_FONTS:
-                issues.append(("error", k, f"font {rpr.get('typeface')!r} (only {FONT} is installed on SYZ machines)"))
+                issues.append(("error", k, f"font {rpr.get('typeface')!r} (house faces: {FONT} for text, {TITLE_FONT} Bold for titles)"))
+        # House rule: slide titles and every run on the cover are Nunito Bold.
+        title_shapes = [sp for sp in root.iter(P + "sp")
+                        if k == 1 or any(ph.get("type") in ("title", "ctrTitle") for ph in sp.iter(P + "ph"))]
+        for sp in title_shapes:
+            for r in sp.iter(A + "r"):
+                rpr, text = r.find(A + "rPr"), "".join(t.text or "" for t in r.iter(A + "t")).strip()
+                latin = rpr.find(A + "latin") if rpr is not None else None
+                if text and (latin is None or latin.get("typeface") != TITLE_FONT or rpr.get("b") != "1"):
+                    where = "cover" if k == 1 else "title"
+                    issues.append(("error", k, f"{where} text {text[:30]!r} is not {TITLE_FONT} Bold"))
+                    break
         leak = next((m for m in (LEAKS.search(t.text or "") for t in root.iter(A + "t")) if m), None)
         if leak:
             issues.append(("error", k, f"leaked placeholder or null value: {leak.group(0).strip()!r}"))

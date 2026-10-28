@@ -87,6 +87,7 @@ Build with `--preview`, then:
 - **No client names, account numbers or holdings** on slides or in file names; a deck for one
   client uses a pseudonym (`C-0042`).
 - The disclaimer and closing pages are added by the renderer; never remove them.
+- **Fonts**: Nunito Sans for all text; Nunito Bold for slide titles and for everything on the cover (first) page. No other face (Arial only for bullet glyphs). The renderer sets this and QC fails a deck that breaks it.
 - Not for: reviews of a client's products or portfolio (`syz-client-presentations`), proposal
   decks built from a basket sheet (`syz-portfolio-proposal`), one-page technical reviews
   (`syz-technical-review`).

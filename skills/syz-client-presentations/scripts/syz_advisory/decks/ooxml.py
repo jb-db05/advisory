@@ -23,7 +23,8 @@ from syz_advisory import config
 TEMPLATE = Path(os.environ.get("SYZ_TEMPLATE") or config.ROOT / "apps" / "S00" / "S00_template.pptx")
 EMU = 914400
 PAGE_W, PAGE_H = 10691813 / EMU, 7559675 / EMU          # 11.69 x 8.27 in
-FONT = "Open Sans"      # installed here; the theme's Nunito Sans is not (see apps/R01/R01_README.md, Fonts)
+FONT = "Nunito Sans"    # body text, everywhere
+TITLE_FONT = "Nunito"   # slide titles and the whole cover page, always bold
 
 # Template geometry (inches): content pages, measured off the slide master and layouts.
 BODY_L, BODY_R = 0.73, 11.01
@@ -61,7 +62,8 @@ def emu(inches: float) -> int:
 # Open Sans advance widths average 0.473 em (regular) and 0.502 em (bold) on the
 # figures and names these decks carry (measured for the R01 export, see its README).
 # 0.51 / 0.55 keep an ~8 % margin: enough that a line never breaks where the estimate
-# said it would not, without shrinking short labels for nothing.
+# said it would not, without shrinking short labels for nothing. Nunito Sans and Nunito
+# set narrower than Open Sans, so these estimates stay on the safe side for the house faces.
 def text_width(text: str, size_pt: float, bold: bool = False) -> float:
     """Estimated width in inches of one line of text."""
     return len(text) * size_pt * (0.55 if bold else 0.51) / 72
@@ -111,11 +113,19 @@ class Run:
     bold: bool = False
     color: str = INK
     italic: bool = False
+    font: str = FONT
 
     def xml(self) -> str:
         attrs = f'lang="en-GB" sz="{int(self.size * 100)}" b="{int(self.bold)}" i="{int(self.italic)}" dirty="0"'
         return (f'<a:r><a:rPr {attrs}><a:solidFill><a:srgbClr val="{self.color}"/></a:solidFill>'
-                f'<a:latin typeface="{FONT}"/><a:cs typeface="{FONT}"/></a:rPr><a:t>{escape(self.text)}</a:t></a:r>')
+                f'<a:latin typeface="{self.font}"/><a:cs typeface="{self.font}"/></a:rPr><a:t>{escape(self.text)}</a:t></a:r>')
+
+
+def title_run(text: str, size: float | None = None) -> str:
+    """A run in the title face: Nunito Bold. Used for slide titles and everything on the cover."""
+    sz = f' sz="{int(size * 100)}"' if size else ""
+    return (f'<a:r><a:rPr lang="en-GB"{sz} b="1" dirty="0"><a:latin typeface="{TITLE_FONT}"/>'
+            f'<a:cs typeface="{TITLE_FONT}"/></a:rPr><a:t>{escape(text)}</a:t></a:r>')
 
 
 def para(runs: list[Run] | Run | str, align: str = "l", bullet: bool = False, space_after: float = 3,
@@ -169,8 +179,7 @@ class Slide:
         words, under TITLE_MAX characters (QC warns above that). The message goes in the subtitle."""
         self.title = text
         size = size or fit_size([text], BODY_W, 0.95, 24, 16, bold=True, inset=0.05)
-        run = f'<a:r><a:rPr lang="en-GB" sz="{int(size * 100)}" dirty="0"><a:latin typeface="{FONT}"/></a:rPr><a:t>{escape(text)}</a:t></a:r>'
-        self.placeholder('<p:ph type="title"/>', [f"<a:p>{run}</a:p>"], "Title")
+        self.placeholder('<p:ph type="title"/>', [f"<a:p>{title_run(text, size)}</a:p>"], "Title")
 
     def set_subtitle(self, text: str, idx: int = 14) -> None:
         """The slide's takeaway, one line under the title, in ink."""
@@ -402,13 +411,14 @@ class Deck:
         self.parts["[Content_Types].xml"] = re.sub(r'<Override PartName="/ppt/slides/slide\d+\.xml"[^>]*/>', "", ct).encode("utf-8")
 
     def _set_fonts(self) -> None:
-        """The theme names Nunito Sans, which is not installed here: PowerPoint would
-        substitute it silently. Point both theme fonts at Open Sans instead."""
+        """House rule: headings in Nunito (bold), body in Nunito Sans. The template's theme
+        names Nunito Sans ExtraBold for headings, so point the theme fonts at the house faces."""
         for name in [n for n in self.parts if re.fullmatch(r"ppt/theme/theme\d+\.xml", n)]:
             x = self.parts[name].decode("utf-8")
-            x = re.sub(r"<a:fontScheme\b.*?</a:fontScheme>",
-                       lambda m: re.sub(r'typeface="Nunito[^"]*"', f'typeface="{FONT}"', m.group(0)), x, flags=re.S)
-            x = re.sub(r'(<a:(?:majorFont|minorFont)><a:latin typeface=")[^"]*(")', rf"\g<1>{FONT}\2", x)
+            for slot, face in (("majorFont", TITLE_FONT), ("minorFont", FONT)):
+                x = re.sub(rf"(<a:{slot}>.*?</a:{slot}>)",
+                           lambda m: re.sub(r'(<a:(?:latin|ea) typeface=")[^"]*(")', rf"\g<1>{face}\2", m.group(1)),
+                           x, count=1, flags=re.S)
             self.parts[name] = x.encode("utf-8")
 
     def add(self, layout: str) -> Slide:

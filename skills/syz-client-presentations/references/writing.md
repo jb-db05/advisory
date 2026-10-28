@@ -47,11 +47,11 @@ Comments rest on research, not on general knowledge. Before writing the messages
 | --- | --- |
 | Page | A4 landscape 29.70 × 21.00 cm, the template's own master: logo top right, compliance footer, page number |
 | Body area | 0.73 → 11.01 in wide, 2.55 → 7.55 in high; nothing below 7.55 in (footer at 7.76 in) |
-| Titles | template title style: amber `#FFA400`, 24 pt, bold; a short label (under 30 characters) |
+| Titles | template title style: amber `#FFA400`, 24 pt, Nunito Bold; a short label (under 30 characters) |
 | Takeaway | the subtitle line under the title: ink, 14 pt, one line |
 | Text | ink `#202945`; body 11–14 pt; tables 11–12 pt (10 for wide tables); chart ticks and legends 10 pt; captions 8 pt grey |
 | Boxes | none filled: white background throughout. Blocks are set off by a short coloured rule and a bold heading, not by grey boxes |
-| Font | **Open Sans** everywhere (theme patched). Nunito Sans is the brand face but is not installed, and PowerPoint would substitute it silently |
+| Font | **Nunito Sans** for all text; **Nunito Bold** for slide titles and everything on the cover page (theme fonts set to match). No other face |
 | Colours | theme order: orange `#FF6C0E`, blueberry `#4B5F80`, amber `#FFA400`, mulberry `#AC5D85`, mint `#3BAF90`, sky `#79D6FF`; red `#C62828` for barriers and losses, green `#2E7D32` for positive status, rust `#C2500A` for orange text |
 | Charts | native, editable PowerPoint charts with data embedded; no frames, no 3D, no gradients; light gridlines on value axes only |
 | Payoff diagram | x = final level of the worst underlying (% of initial), y = return incl. coupons; product with barrier breached (red) and not breached (orange), direct investment dashed grey |

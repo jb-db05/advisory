@@ -21,9 +21,9 @@ from xml.sax.saxutils import escape
 
 from syz_advisory.decks import analytics as A
 from syz_advisory.decks import charts as C
-from syz_advisory.decks.ooxml import (AMBER, BLUEBERRY, BODY_B, BODY_L, BODY_R, BODY_T, BODY_W, Deck, GREEN, GREY, INK,
+from syz_advisory.decks.ooxml import (AMBER, BLUEBERRY, BODY_B, BODY_L, BODY_R, BODY_T, BODY_W, Deck, FONT, GREEN, GREY, INK,
                                       MINT, MULBERRY, ORANGE, PALETTE, RED, RUST, Run, Slide, T_AMBER, T_GREEN, T_HEAD,
-                                      T_RED, para)
+                                      T_RED, para, title_run)
 from syz_advisory.decks.inputs import ingest, load_terms
 from syz_advisory.decks.sources import (CALCULATED, INCONSISTENT, MISSING, CsvPrices, FirstOf, Market, Terms, merge,
                                         terms_from_case)
@@ -151,10 +151,9 @@ def research_wrapup(ctx: Context) -> None:
 # ------------------------------------------------------------------ cover, agenda, closing
 def cover(ctx: Context, title: str) -> None:
     s = ctx.deck.add("Cover Slide 2")
-    run = f'<a:r><a:rPr lang="en-GB" dirty="0"/><a:t>{escape(title)}</a:t></a:r>'
-    s.placeholder('<p:ph type="ctrTitle"/>', [f"<a:p>{run}</a:p>"], "Title")
+    s.placeholder('<p:ph type="ctrTitle"/>', [f"<a:p>{title_run(title)}</a:p>"], "Title")
     intro = f"{ctx.case.get('client', 'Client')} · {ctx.as_of:%d %B %Y}"
-    s.placeholder('<p:ph type="body" sz="quarter" idx="13"/>', [f'<a:p><a:r><a:rPr lang="en-GB" dirty="0"/><a:t>{escape(intro)}</a:t></a:r></a:p>'], "Intro")
+    s.placeholder('<p:ph type="body" sz="quarter" idx="13"/>', [f"<a:p>{title_run(intro)}</a:p>"], "Intro")
     s.picture_placeholder(14, ctx.deck.cover_image)
     s.title = title
 
@@ -416,8 +415,8 @@ def _colour_bullets(s: Slide, colors: list[str]) -> None:
     """Colour the '■' markers of the last table in series order."""
     xml = s.shapes[-1]
     for c in colors:
-        xml = xml.replace(f'<a:srgbClr val="{INK}"/></a:solidFill><a:latin typeface="Open Sans"/><a:cs typeface="Open Sans"/></a:rPr><a:t>■ ',
-                          f'<a:srgbClr val="{c}"/></a:solidFill><a:latin typeface="Open Sans"/><a:cs typeface="Open Sans"/></a:rPr><a:t>■ ', 1)
+        xml = xml.replace(f'<a:srgbClr val="{INK}"/></a:solidFill><a:latin typeface="{FONT}"/><a:cs typeface="{FONT}"/></a:rPr><a:t>■ ',
+                          f'<a:srgbClr val="{c}"/></a:solidFill><a:latin typeface="{FONT}"/><a:cs typeface="{FONT}"/></a:rPr><a:t>■ ', 1)
     s.shapes[-1] = xml
 
 

@@ -64,6 +64,7 @@ Two slides per symbol (price with 50/200-day averages and facts; total return vs
 - A product whose autocall condition was met on a past observation is "Called?" until confirmed with the issuer.
 - Research is quoted with its source and date, worded as that source's view; never blended into a calculated figure.
 - The template's Important Information and offices pages close every deck.
+- **Fonts**: Nunito Sans for all text; Nunito Bold for slide titles and for everything on the cover (first) page. No other face (Arial only for bullet glyphs). The renderer sets this and QC fails a deck that breaks it.
 
 ## Example
 

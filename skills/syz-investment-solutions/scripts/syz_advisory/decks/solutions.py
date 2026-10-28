@@ -39,8 +39,8 @@ from xml.sax.saxutils import escape
 
 from syz_advisory.decks import charts as C
 from syz_advisory.decks.ooxml import (AMBER, BLUEBERRY, BODY_B, BODY_L, BODY_R, BODY_W, FONT, GREY, INK, MINT, ORANGE,
-                                      PALETTE, RULE, T_GREEN, T_RED, T_RULE, TITLE_MAX, Deck, Run, Slide, emu, fit_size,
-                                      text_height)
+                                      PALETTE, RULE, T_GREEN, T_RED, T_RULE, TITLE_FONT, TITLE_MAX, Deck, Run, Slide, emu,
+                                      fit_size, text_height, title_run)
 
 TOP = 2.45                     # body top under the section label
 GAP = 0.35                     # between columns and blocks
@@ -64,18 +64,19 @@ class Build:
 
 
 # ------------------------------------------------------------------ rich text
-def runs(text: str, size: float, color: str = INK, bold: bool = False, italic: bool = False) -> list[Run]:
+def runs(text: str, size: float, color: str = INK, bold: bool = False, italic: bool = False,
+         font: str = FONT) -> list[Run]:
     """**bold** keeps the colour, __text__ is orange bold (the decks' emphasis)."""
     out = []
     for part in re.split(r"(\*\*.+?\*\*|__.+?__)", str(text)):
         if not part:
             continue
         if part.startswith("**"):
-            out.append(Run(part[2:-2], size, True, color, italic))
+            out.append(Run(part[2:-2], size, True, color, italic, font))
         elif part.startswith("__"):
-            out.append(Run(part[2:-2], size, True, ORANGE, italic))
+            out.append(Run(part[2:-2], size, True, ORANGE, italic, font))
         else:
-            out.append(Run(part, size, bold, color, italic))
+            out.append(Run(part, size, bold, color, italic, font))
     return out
 
 
@@ -647,8 +648,7 @@ def cover(b: Build, spec: dict) -> None:
     s = b.deck.add("Cover Slide 2")
     lines = (spec.get("title") or "Investment Solutions\nby your Advisory Team").split("\n")
     size = fit_size(lines, 4.9, 1.35, 26, 18, bold=True, inset=0.1)
-    paras = "".join(f'<a:p><a:r><a:rPr lang="en-GB" sz="{int(size * 100)}" dirty="0"/><a:t>{escape(l)}</a:t></a:r></a:p>'
-                    for l in lines)
+    paras = "".join(f"<a:p>{title_run(l, size)}</a:p>" for l in lines)
     sid = s._id()      # the layout's title box is 3.8 in wide: widened to the photo's edge, as in the reference decks
     s.shapes.append(
         f'<p:sp><p:nvSpPr><p:cNvPr id="{sid}" name="Title {sid}"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>'
@@ -661,7 +661,7 @@ def cover(b: Build, spec: dict) -> None:
     except ValueError:
         pass
     s.placeholder('<p:ph type="body" sz="quarter" idx="13"/>',
-                  [f'<a:p><a:r><a:rPr lang="en-GB" dirty="0"/><a:t>{escape(when)}</a:t></a:r></a:p>'], "Intro")
+                  [f"<a:p>{title_run(when)}</a:p>"], "Intro")
     got = _load_image(b, spec["cover_image"], 1) if spec.get("cover_image") else None
     if got:
         target, (pw, ph) = got
@@ -679,7 +679,7 @@ def cover(b: Build, spec: dict) -> None:
     else:
         s.picture_placeholder(14, b.deck.cover_image)
     if spec.get("cover_caption"):
-        shape(s, 6.1, 6.75, 5.35, 1.2, [paragraph(runs(l, 24, ORANGE, bold=True), align="r", space_after=0)
+        shape(s, 6.1, 6.75, 5.35, 1.2, [paragraph(runs(l, 24, ORANGE, bold=True, font=TITLE_FONT), align="r", space_after=0)
                                         for l in spec["cover_caption"].split("\n")], anchor="b", name="Caption")
     s.title = lines[0]
 

@@ -6,11 +6,11 @@ Read before choosing layouts, and when improving a deck.
 
 | Element | Rule |
 | --- | --- |
-| Cover | Template "Cover Slide 2": title bottom-left (orange gradient), date above it, a photograph on the right half; the idea's name in orange over the photo |
-| Title | Template title: bold, orange-to-amber gradient, one line, under 30 characters |
+| Cover | Template "Cover Slide 2": title bottom-left (orange gradient), date above it, a photograph on the right half; the idea's name in orange over the photo. Every word on the cover is Nunito Bold |
+| Title | Template title: Nunito Bold, orange-to-amber gradient, one line, under 30 characters |
 | Section label | Italic orange line under the title: what kind of slide this is ("Market context", "Indicative terms", "Leverage") |
 | Page | White. No grey or filled text boxes. Blocks are separated by space, outlined cards (rounded, orange or ink), thin rules |
-| Text | Ink `#202945`, Open Sans, 11–13 pt; orange → bullets; **bold** for the key words; orange bold for the one phrase that matters |
+| Text | Ink `#202945`, Nunito Sans, 11–13 pt; orange → bullets; **bold** for the key words; orange bold for the one phrase that matters |
 | Figures | Big and bold: orange (key figures), amber in outlined boxes (limits, coupons), ink in a strip (secondary facts) |
 | Tables | Orange bold header, orange rule under it and at the end, light rules between rows, first column bold, highlighted values in orange |
 | Charts | Native and editable. Orange line with round markers for payoffs; blueberry columns with the key bars in amber / orange; data labels bold; light gridlines; no frames, no 3D |

@@ -12,6 +12,12 @@ investment-solutions decks and structured-product charts.
 | [`syz-investment-solutions`](skills/syz-investment-solutions) | Builds new decks in the SYZ "Investment Solutions" format from research and data, or restructures an existing cluttered deck. | PowerPoint |
 | [`syz-proposal-charts`](skills/syz-proposal-charts) | Charts a structured-products proposal: baskets rebased to 100 with strike and barrier, and each underlying's distance to protection. | HTML and A4 PDF |
 
+## House rules for presentations
+
+- **Fonts**: Nunito Sans for all text. Nunito Bold for slide titles and for
+  everything on the cover (first) page. No other face. The deck renderers set
+  this and their QC fails any deck that breaks it.
+
 ## Layout
 
 ```

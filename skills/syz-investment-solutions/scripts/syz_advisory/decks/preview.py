@@ -2,7 +2,7 @@
 
 PowerPoint cannot be automated here and Edge headless is blocked, so this is how a
 deck is looked at before it is opened: every slide at 96 dpi, text in the
-installed Open Sans (so line breaks fall where PowerPoint puts them, near enough),
+house face, Nunito Sans (so line breaks fall where PowerPoint puts them, near enough),
 tables cell by cell, charts redrawn as SVG from their cached values. Layout
 placeholders (titles, subtitles) are placed with the template's own geometry.
 
@@ -187,7 +187,7 @@ def _chart_svg(root, w: float, h: float) -> str:
     W, H = w * DPI, h * DPI
     ser = _series(root)
     kind = next((t.tag.split("}")[1] for t in root.find(f"{C}chart/{C}plotArea") if t.tag.endswith("Chart")), "")
-    svg = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W:.0f}" height="{H:.0f}" font-family="Open Sans" font-size="11">']
+    svg = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W:.0f}" height="{H:.0f}" font-family="Nunito Sans" font-size="11">']
     if kind in ("doughnutChart", "pieChart") and ser:
         s = ser[0]
         total = sum(v for v in s["val"] if v) or 1
@@ -347,15 +347,15 @@ def html(path: Path) -> str:
                          f'<div class="box foot" style="left:{_px(11.11)};top:{_px(7.76)};width:{_px(0.3)}">{k}</div>')
         pages.append(f'<section class="slide" id="s{k}" data-layout="{escape(layout)}">{"".join(items)}</section>')
     return f"""<!doctype html><html><head><meta charset="utf-8"><title>Deck preview</title><style>
-body{{margin:0;background:#E9EBF0;font-family:'Open Sans',sans-serif;color:#202945}}
-.slide{{position:relative;width:{_px(PAGE_W)};height:{_px(PAGE_H)};background:#fff;margin:24px auto;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.2);font-family:'Open Sans',sans-serif;color:#202945}}
+body{{margin:0;background:#E9EBF0;font-family:'Nunito Sans',sans-serif;color:#202945}}
+.slide{{position:relative;width:{_px(PAGE_W)};height:{_px(PAGE_H)};background:#fff;margin:24px auto;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.2);font-family:'Nunito Sans',sans-serif;color:#202945}}
 .box{{position:absolute;box-sizing:border-box;overflow:visible}}
 .box div{{line-height:1.3}}
 .tbl{{position:absolute;border-collapse:collapse;table-layout:fixed}}
 .tbl td{{padding:0.02in 0.08in 0.02in 0.1in;vertical-align:middle;overflow:hidden}}
 .tbl td div{{line-height:1.25}}
 .frame{{position:absolute;outline:1px dashed rgba(255,0,0,.35);pointer-events:none}}
-.logo{{border:1px solid #202945;font:700 9px 'Open Sans';text-align:center;line-height:40px}}
+.logo{{border:1px solid #202945;font:700 9px 'Nunito';text-align:center;line-height:40px}}
 .foot{{font-size:8pt;color:#8C8C8C}}
 .note{{font-size:12pt;color:#8C8C8C}}
 </style></head><body>{"".join(pages)}</body></html>"""

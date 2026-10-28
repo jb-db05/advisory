@@ -4,7 +4,7 @@ Read this before handing a deck over. Tick every line; anything unresolved goes 
 
 ## Automatic (the build prints these)
 
-- [ ] QC: 0 errors (package integrity, every part well-formed, no shape off the page or over the footer, Open Sans only, no leaked `None`/`nan`, every content slide titled, chart caches valid)
+- [ ] QC: 0 errors (package integrity, every part well-formed, no shape off the page or over the footer, Nunito Sans for text and Nunito Bold for titles and the cover only, no leaked `None`/`nan`, every content slide titled, chart caches valid)
 - [ ] QC warnings reviewed in the preview (text that may overflow a box)
 - [ ] Every open point resolved or deliberately left visible on the sources slide
 
