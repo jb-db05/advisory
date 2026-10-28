@@ -14,13 +14,15 @@ import struct
 import zlib
 from pathlib import Path
 
-# Open Sans (the SYZ decks' face) wherever it is installed, else a common sans on Linux sandboxes.
-# SYZ_FONTS may name a folder holding <face>-Regular.ttf and <face>-Bold.ttf; apps/S00/fonts holds
-# the brand face (Nunito Sans) so it works without being installed.
-_PAIRS = [("OpenSans-Regular.ttf", "OpenSans-Bold.ttf"), ("DejaVuSans.ttf", "DejaVuSans-Bold.ttf"),
-          ("LiberationSans-Regular.ttf", "LiberationSans-Bold.ttf")]
+# House fonts: Nunito Sans for text, Nunito Bold for titles (and bold text). The skill bundles them in
+# assets/fonts (SIL OFL), so they are used without being installed. SYZ_FONTS may name another folder
+# holding them; apps/S00/fonts holds them in the workspace. Open Sans, DejaVu and Liberation are only
+# fallbacks for when the files are missing.
+_PAIRS = [("NunitoSans-Regular.ttf", "Nunito-Bold.ttf"), ("OpenSans-Regular.ttf", "OpenSans-Bold.ttf"),
+          ("DejaVuSans.ttf", "DejaVuSans-Bold.ttf"), ("LiberationSans-Regular.ttf", "LiberationSans-Bold.ttf")]
+_BUNDLED = Path(__file__).resolve().parents[2] / "assets" / "fonts"
 _SHARED = Path(__file__).resolve().parents[2] / "apps" / "S00" / "fonts"
-_DIRS = [os.environ.get("SYZ_FONTS"), str(_SHARED), r"C:\Windows\Fonts",
+_DIRS = [os.environ.get("SYZ_FONTS"), str(_BUNDLED), str(_SHARED), r"C:\Windows\Fonts",
          os.path.expandvars(r"%LOCALAPPDATA%\Microsoft\Windows\Fonts"),
          "/usr/share/fonts/truetype/open-sans", "/usr/share/fonts/truetype/dejavu", "/usr/share/fonts/dejavu",
          "/usr/share/fonts/truetype/liberation", "/usr/share/fonts/TTF", "/Library/Fonts"]
@@ -31,8 +33,9 @@ NUNITO_SANS = [("NunitoSans-Regular.ttf", "NunitoSans-Bold.ttf"),
 
 
 def find_fonts(pairs: list[tuple[str, str]] | None = None) -> tuple[Path, Path] | None:
-    """(regular, bold) TrueType files of the first face found, or None. `pairs` defaults to
-    Open Sans and its stand-ins; pass e.g. NUNITO_SANS to look for another face first."""
+    """(regular, bold) TrueType files of the first face found, or None. `pairs` defaults to the
+    house pair (Nunito Sans / Nunito Bold) and its stand-ins; pass e.g. NUNITO_SANS to look for
+    another pair first."""
     for reg, bold in pairs or _PAIRS:
         for d in filter(None, _DIRS):
             if (Path(d) / reg).is_file() and (Path(d) / bold).is_file():

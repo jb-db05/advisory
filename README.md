@@ -14,9 +14,12 @@ investment-solutions decks and structured-product charts.
 
 ## House rules for presentations
 
-- **Fonts**: Nunito Sans for all text. Nunito Bold for slide titles and for
-  everything on the cover (first) page. No other face. The deck renderers set
-  this and their QC fails any deck that breaks it.
+- **Fonts, by default in every skill and every output** (PowerPoint, PDF, HTML,
+  chart images): Nunito Sans for all text, Nunito Bold for titles and for
+  everything on a cover (first) page. No other face. The fonts are bundled in
+  each skill's `assets/fonts` (SIL Open Font License), so PDFs and chart images
+  embed them without anything being installed. PowerPoint files name the fonts,
+  so Nunito and Nunito Sans must be installed where the decks are opened.
 - **Font sizes**: titles aside, only three sizes: 16 pt (lead lines, key
   figures), 12 pt (body text, tables) and 8 pt (notes, sources, chart labels).
 

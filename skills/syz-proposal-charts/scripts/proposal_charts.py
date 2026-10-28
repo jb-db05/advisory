@@ -62,6 +62,9 @@ def price(x) -> str:
     return f"{x:,.2f}" if x < 10_000 else f"{x:,.0f}"
 
 
+# House fonts: Nunito Sans for text, Nunito Bold for titles (the PDFs embed the same pair).
+TEXT_FONT = "'Nunito Sans', 'Nunito', Lato, Calibri, Arial, sans-serif"
+TITLE_FONT = "'Nunito', 'Nunito Sans', Lato, Calibri, Arial, sans-serif"
 SYMBOL = {"EUR": "€", "USD": "$", "GBP": "£"}
 
 
@@ -277,6 +280,7 @@ CSS = """
 *{box-sizing:border-box}
 body{margin:0;background:#fff;color:var(--ink);font-family:%(font)s;font-weight:400;font-size:14px;line-height:1.45}
 main{max-width:1000px;margin:0 auto;padding:28px 16px 60px}
+h1,h2{font-family:%(title_font)s}
 h1{font-weight:700;font-size:26px;margin:0 0 4px}h2{font-weight:700;font-size:17px;margin:0}
 .sub,.hint,small{color:var(--muted)}small{font-size:11px}.hint{font-size:12px;margin:6px 0}
 .bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin:18px 0 10px}
@@ -358,14 +362,14 @@ def render(data: dict) -> str:
         rows.append(f'<tr><td></td><td>Cash</td><td></td><td></td><td></td><td class="num">{pct(cash.get("weight"))}</td>'
                     f'<td class="num">{money(cash.get("size"), cash.get("ccy"))}</td><td></td><td></td></tr>')
     css = CSS % {"ink": brand.INK, "muted": MUTED, "rule": AXIS, "grid": GRID, "warn": BARRIER,
-                 "accent": P["tiger_orange"], "font": brand.FONT_STACK}
+                 "accent": P["tiger_orange"], "font": TEXT_FONT, "title_font": TITLE_FONT}
     asof = data["asof"]
     blob = json.dumps(charts, separators=(",", ":")).replace("</", "<\\/")
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Structured Products Proposal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700&family=Nunito+Sans:wght@300;400;700&display=swap" rel="stylesheet">
 <style>{css}</style></head>
 <body data-w="1y"><main>
 <h1>Structured products proposal</h1>

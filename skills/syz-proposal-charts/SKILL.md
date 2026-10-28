@@ -146,6 +146,8 @@ Options: `--pdf` writes a 1-year and a 3-year PDF (`--pdf 1y,3y,5y` for all thre
 
 ## Rules
 
+- **Fonts**: Nunito Sans for text, Nunito Bold for titles, in the PDFs and the HTML page. The script
+  embeds the copies bundled in `assets/fonts`; never let it fall back to another face.
 - Every price comes from Yahoo Finance closes. Every level is calculated by the script. Nothing is
   filled from memory or typed in.
 - Levels assume each product is struck at today's close. Keep the footer disclaimer and never

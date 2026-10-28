@@ -195,6 +195,10 @@ def price_png(market: Market, symbol: str, out: Path, *, start: date, bench: str
     shown = price.since(start)
     n = len(shown.closes)
     xs = [date.fromisoformat(d) for d in shown.dates]
+    # House fonts, bundled with the skill (assets/fonts) so the chart does not depend on what is installed.
+    fonts = Path(__file__).resolve().parents[3] / "assets" / "fonts"
+    for ttf in fonts.glob("*.ttf"):
+        matplotlib.font_manager.fontManager.addfont(str(ttf))
     plt.rcParams.update({"font.family": ["Nunito Sans", "DejaVu Sans"], "font.size": 9,
                          "axes.edgecolor": "#A6A9B5", "axes.labelcolor": "#202945", "xtick.color": "#8C8C8C",
                          "ytick.color": "#8C8C8C", "axes.spines.top": False, "axes.spines.right": False})
