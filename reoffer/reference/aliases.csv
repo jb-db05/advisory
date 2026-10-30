@@ -1,0 +1,24 @@
+field,alias,canonical
+issuer,BNP,BNP Paribas
+issuer,BNPP,BNP Paribas
+issuer,GS,Goldman Sachs
+issuer,Goldman,Goldman Sachs
+issuer,JPM,J.P. Morgan
+issuer,JP Morgan,J.P. Morgan
+issuer,JPMorgan,J.P. Morgan
+issuer,Citi,Citigroup
+issuer,MS,Morgan Stanley
+issuer,SG,Société Générale
+issuer,SocGen,Société Générale
+issuer,Societe Generale,Société Générale
+issuer,UBS AG,UBS
+issuer,EFG,EFG International
+issuer,Julius Bär,Julius Baer
+payoff,BRC,Barrier Reverse Convertible
+payoff,Autocall,Autocallable
+payoff,Phoenix,Phoenix Autocallable
+payoff,CPN,Capital Protected Note
+payoff,CLN,Credit Linked Note
+management_style,Advisory mandate,Advisory
+management_style,DM,Discretionary
+management_style,EO,Execution Only

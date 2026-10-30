@@ -1,0 +1,36 @@
+field,value
+issuer,BNP Paribas
+issuer,Barclays
+issuer,BBVA
+issuer,Citigroup
+issuer,EFG International
+issuer,Goldman Sachs
+issuer,J.P. Morgan
+issuer,Julius Baer
+issuer,Leonteq
+issuer,Morgan Stanley
+issuer,Natixis
+issuer,Raiffeisen
+issuer,Société Générale
+issuer,UBS
+issuer,Vontobel
+payoff,Barrier Reverse Convertible
+payoff,Autocallable
+payoff,Phoenix Autocallable
+payoff,Capital Protected Note
+payoff,Credit Linked Note
+payoff,Participation Note
+payoff,Twin Win
+payoff,Fixed Rate Note
+currency,CHF
+currency,EUR
+currency,USD
+currency,GBP
+currency,JPY
+currency,HKD
+currency,SGD
+apl,Yes
+apl,No
+management_style,Advisory
+management_style,Discretionary
+management_style,Execution Only

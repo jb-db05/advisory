@@ -1,0 +1,7 @@
+# Client trade data never goes into git.
+workspace/
+*.xlsx
+!reoffer/reference/*.xlsx
+~$*
+__pycache__/
+.pytest_cache/
