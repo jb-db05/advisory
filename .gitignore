@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+
+# Run folders and build scratch stay LOCAL: client-adjacent data, never committed.
+.input/
+.output/
+_tt_build/
+fonts/
