@@ -1,0 +1,6 @@
+Basket,Underlying 1,Underlying 2,Underlying 3,Coupon,Downside protection,Maturity,Weight,Stepdown,Issuer
+CASH,,,,,,,10%,,
+1,NIKKEI 225,EURO STOXX 50,S&P 500,7.00%,European Barrière 62%,18 months,30%,,JPMorgan
+2,ASML,NVIDIA,,8.00%,Low strike 64%,15 months,20%,100%→98%→96%→…→84%,
+3,COCA-COLA,WALMART,NESTLE,7.00%,Low strike 75%,18 months,20%,,Raiffeisen
+4,GOLDMAN SACHS,JP MORGAN,MORGAN STANLEY,7.00%,Low strike 74%,15 months,20%,,BIL

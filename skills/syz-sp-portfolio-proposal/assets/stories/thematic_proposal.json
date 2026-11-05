@@ -1,0 +1,35 @@
+{
+  "title": "Thematic structured products portfolio",
+  "subtitle": "Proposal by the Syz advisory team",
+  "kicker": "STRUCTURED PRODUCTS · ADVISORY",
+  "objective": "Generate a regular, high coupon from the companies and markets we have the strongest convictions on, with a defined level of protection on every product and no single story dominating the portfolio.",
+  "house_min_index": 0.20,
+  "clusters": {
+    "Global indices": [1, 2],
+    "Technology & AI": [3, 4, 5, 6, 7, 10],
+    "Financials": [8, 9, 18],
+    "Energy transition & real assets": [11, 12, 13],
+    "Defensive growth": [14, 15],
+    "Aerospace & luxury": [16, 17]
+  },
+  "products": {
+    "1":  {"theme": "Global equity core", "thesis": "Three largest developed markets: diversified market risk, no single-company risk."},
+    "2":  {"theme": "Growth & small caps", "thesis": "Tech leadership, US small caps and Nordic cyclicals: three engines, rate-cut beneficiaries."},
+    "3":  {"theme": "Digital platforms", "thesis": "Cash-rich mega-caps monetising AI across search, devices and enterprise cloud."},
+    "4":  {"theme": "Internet platforms", "thesis": "The two largest internet profit pools, advertising and e-commerce, plus cloud."},
+    "5":  {"theme": "AI semiconductors", "thesis": "The three bottlenecks of AI compute: foundry, accelerators, custom chips."},
+    "6":  {"theme": "Semiconductor equipment", "thesis": "Tool makers behind every new chip fab, with monopoly-like positions."},
+    "7":  {"theme": "Cybersecurity", "thesis": "The leading security platform consolidator; budgets among the last to be cut."},
+    "8":  {"theme": "US investment banks", "thesis": "Leaders of US capital markets, levered to the M&A and IPO recovery."},
+    "9":  {"theme": "European banks & Swiss wealth management", "thesis": "Well-capitalised European banks and Swiss wealth managers with large buybacks."},
+    "10": {"theme": "AI infrastructure: networking", "thesis": "The plumbing of AI data centres, whichever chips win."},
+    "11": {"theme": "Electrification & grid", "thesis": "European electrical champions with multi-year grid and data-centre order books."},
+    "12": {"theme": "Energy & power", "thesis": "Oil majors and a power producer: cash returns and energy security."},
+    "13": {"theme": "Real assets: gold, copper, uranium", "thesis": "Gold, copper and uranium miners: hedge, electrification and nuclear revival."},
+    "14": {"theme": "Healthcare leaders", "thesis": "Defensive growth: obesity drugs, drug distribution and diagnostics."},
+    "15": {"theme": "Consumer staples", "thesis": "Everyday global brands with pricing power and the lowest volatility."},
+    "16": {"theme": "Aerospace", "thesis": "European aircraft and engine makers with decade-long order books."},
+    "17": {"theme": "Luxury & prestige brands", "thesis": "The highest-quality luxury names, first in line for a demand recovery."},
+    "18": {"theme": "Financial infrastructure", "thesis": "Toll-road financials: payment networks and the largest asset manager."}
+  }
+}
