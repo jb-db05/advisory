@@ -1,0 +1,8 @@
+,,,,,,,,,,
+Basket,Underlying 1,Underlying 2,Underlying 3,Coupon,Downside protection,Maturity,Weight,Fees,Stepdown,Size
+CASH,,,,,,,10%,,, € 100’000.00
+1,NIKKEI 225,EURO STOXX 50,S&P 500,7.00%,European Barrière 65%,18 months,40%,1.50%,, € 400’000.00
+2,NESTLE,NOVARTIS,,6.50%,Low strike 70%,12 months,30%,1.50%,, € 300’000.00
+3,ASML,NVIDIA,,8.00%,Low strike 63%,12 months,20%,2.00%,100%→98%→96%→…→84%, € 200’000.00
+,,,,,,,,,,
+,,,AVERAGE COUPON,6.55%,,Total Weight,100%,,Total Weight, € 1’000’000.00

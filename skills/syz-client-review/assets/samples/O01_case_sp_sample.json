@@ -1,0 +1,64 @@
+{
+  "type": "sp_review",
+  "client": "C-0001",
+  "as_of": "2026-10-14",
+  "currency": "CHF",
+  "title": "Structured Products Portfolio Review",
+  "products": [
+    {
+      "source": {
+        "html": "O01_factsheet01.html"
+      },
+      "nominal": 250000,
+      "currency": "USD"
+    },
+    {
+      "source": {
+        "html": "O01_factsheet02.html"
+      },
+      "nominal": 300000,
+      "currency": "CHF"
+    },
+    {
+      "label": "RC on Euro Stoxx 50",
+      "nominal": 150000,
+      "currency": "EUR",
+      "terms": {
+        "issuer": "Bank C",
+        "currency": "EUR",
+        "product_type": "Reverse Convertible",
+        "coupon": 0.07,
+        "frequency": 12,
+        "strike": 0.9,
+        "initial_fixing": "01.12.2025",
+        "final_fixing": "01.12.2026",
+        "underlyings": [
+          {
+            "name": "Euro Stoxx 50",
+            "ticker": "SX5E Index"
+          }
+        ]
+      }
+    }
+  ],
+  "research": [
+    {"about": "market", "text": "SAMPLE: replace with the house view on equity markets and volatility, quoted from the research note.", "source": "Sample research note", "date": "Oct 2026"},
+    {"about": ["NESN.SW", "ZURN.SW"], "text": "SAMPLE: replace with what drives the weakest underlying, from research or the latest news.", "source": "Sample research note", "date": "Oct 2026"}
+  ],
+  "messages": {
+    "summary": [
+      "SAMPLE CASE - fictional products on real underlyings, for testing the generator.",
+      "Replace these lines with the advisor's three key messages for the client."
+    ],
+    "risks": [
+      "Sample: issuer credit risk on three issuers.",
+      "Sample: concentration in US mega-cap technology."
+    ],
+    "opportunities": [
+      "Sample: roll the maturing Euro Stoxx 50 note."
+    ],
+    "next_steps": [
+      "Sample: review the barrier distances at the next meeting."
+    ]
+  }
+}

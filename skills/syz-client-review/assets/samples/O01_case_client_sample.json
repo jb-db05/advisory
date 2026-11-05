@@ -1,0 +1,96 @@
+{
+  "type": "client_review",
+  "client": "C-0002",
+  "as_of": "2026-10-14",
+  "currency": "CHF",
+  "period_days": 365,
+  "benchmark": {
+    "symbol": "URTH",
+    "name": "MSCI World (iShares ETF)"
+  },
+  "target_allocation": {
+    "Equities": 0.55,
+    "Bonds": 0.3,
+    "Cash": 0.05,
+    "Alternatives": 0.1
+  },
+  "holdings": [
+    {
+      "name": "iShares Core S&P 500 ETF",
+      "symbol": "IVV",
+      "asset_class": "Equities",
+      "currency": "USD",
+      "region": "North America",
+      "value": 900000,
+      "fund_detail": true
+    },
+    {
+      "name": "Nestle",
+      "symbol": "NESN.SW",
+      "asset_class": "Equities",
+      "currency": "CHF",
+      "region": "Switzerland",
+      "value": 400000,
+      "spotlight": true
+    },
+    {
+      "name": "Novartis",
+      "symbol": "NOVN.SW",
+      "asset_class": "Equities",
+      "currency": "CHF",
+      "region": "Switzerland",
+      "value": 350000
+    },
+    {
+      "name": "Microsoft",
+      "symbol": "MSFT",
+      "asset_class": "Equities",
+      "currency": "USD",
+      "region": "North America",
+      "value": 300000
+    },
+    {
+      "name": "iShares Core Global Aggregate Bond ETF",
+      "symbol": "AGGG.L",
+      "asset_class": "Bonds",
+      "currency": "USD",
+      "region": "Global",
+      "value": 700000
+    },
+    {
+      "name": "iShares Swiss Domestic Govt Bond ETF",
+      "symbol": "CSBGC0.SW",
+      "asset_class": "Bonds",
+      "currency": "CHF",
+      "region": "Switzerland",
+      "value": 400000
+    },
+    {
+      "name": "Gold ETF",
+      "symbol": "GLD",
+      "asset_class": "Alternatives",
+      "currency": "USD",
+      "region": "Global",
+      "value": 250000
+    },
+    {
+      "name": "Cash CHF",
+      "asset_class": "Cash",
+      "currency": "CHF",
+      "region": "Switzerland",
+      "value": 200000
+    }
+  ],
+  "messages": {
+    "summary": [
+      "SAMPLE CASE - fictional client, for testing the generator.",
+      "Replace these lines with the advisor's three key messages for the client."
+    ],
+    "risks": [
+      "Sample: equity weight close to the upper band."
+    ],
+    "opportunities": [
+      "Sample: rebalance bonds towards the strategic weight."
+    ]
+  }
+}

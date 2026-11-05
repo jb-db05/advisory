@@ -1,0 +1,43 @@
+{
+  "title": "Investment Solutions\nby your Advisory Team",
+  "date": "2026-10-23",
+  "cover_caption": "Sample idea",
+  "slides": [
+    {
+      "title": "The idea",
+      "subtitle": "SAMPLE deck: fictional figures",
+      "blocks": [{"type": "cards", "cards": [
+        {"icon": "check", "heading": "What it offers", "items": ["**Income**: a fixed coupon of __6% p.a.__", "**Protection** down to a 60% barrier"]},
+        {"icon": "question", "tone": "amber", "heading": "What it costs", "items": ["**Equity risk** below the barrier", "**Issuer credit risk**"]}]}],
+      "takeaway": "One idea per slide: the takeaway states it with its figure.",
+      "source": "Sample data, for testing the generator"
+    },
+    {
+      "title": "Why now",
+      "subtitle": "Market context",
+      "top": [{"type": "kpis", "items": [
+        {"value": "22%", "label": "1-year volatility", "note": "sample"},
+        {"value": "15x", "label": "Forward P/E"},
+        {"value": "+8%", "label": "Earnings growth 2027e"}]}],
+      "columns": [
+        {"width": 0.45, "blocks": [{"type": "text", "items": ["**Earnings** keep rising", "**Valuation** below its average", "**Risk**: a slower economy"]}]},
+        {"width": 0.55, "blocks": [{"type": "chart", "chart": "column", "heading": "Coupon paid if called",
+          "categories": ["Q1", "Q2", "Q3", "Q4"], "series": {"Coupon": [0.015, 0.03, 0.045, 0.06]},
+          "fmt": "0.0%", "colors": ["blueberry"], "highlight": {"3": "orange"}}]}
+      ],
+      "note": "Illustrative, not a forecast.",
+      "source": "Sample data"
+    },
+    {
+      "title": "Indicative terms",
+      "subtitle": "Sample note",
+      "columns": [
+        {"width": 0.6, "blocks": [{"type": "terms", "highlight": ["Coupon"], "rows": [
+          ["Issuer / currency", "Bank A / CHF"], ["Maturity", "12 months"], ["Barrier", "60% (European)"], ["Coupon", "6% p.a., quarterly"]]}]},
+        {"width": 0.4, "blocks": [{"type": "kpis", "style": "box", "items": [{"value": "6%", "label": "Coupon p.a."}, {"value": "60%", "label": "Barrier"}]},
+                                  {"type": "callout", "label": "Interested?", "text": "Ask your advisory team for a live price."}]}
+      ],
+      "source": "Sample indicative terms"
+    }
+  ]
+}

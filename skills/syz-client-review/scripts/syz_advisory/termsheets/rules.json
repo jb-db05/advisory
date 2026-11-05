@@ -1,0 +1,114 @@
+{
+  "_comment": "Editable naming rules for term sheet file names. Regex patterns are case-insensitive and tolerant of missing spaces only where written with \\s*.",
+
+  "name_template": "{fixing_date} - {currency} {duration} {issuer} {product_type} {coupon} {underlyings} - {identifier}",
+  "date_format": "%y%m%d",
+  "underlying_separator": "-",
+
+  "_label_comment": "Step 2: short booking label built from the name (ISSUER TYPE COUPON UNDERLYINGS). Must be at most label_max_length characters; if too long the product type is dropped first, then the '%' signs.",
+  "label_max_length": 25,
+  "instructions_template": "Produit pour SYZ uniquement, merci d'utiliser le libellé suivant:\n{label}\nMerci de mettre PS code instrument O29\nMerci d’ouvrir et débloquer la place de bourse YDER dans le listing\nMerci de mettre la place de bourse YCHD en Main Trading Place et de la bloquer dans le listing\nMerci de préciser entity group owner SYZG",
+
+  "_email_comment": "Step 3: trade confirmation email. Every value is editable in the tool before the Outlook draft is written; this is only the wording and the layout. 'rows' is [field, label] in table order.",
+  "email": {
+    "greeting": "Hello,",
+    "intro": "Voici la confirmation du Trade comme discuté par téléphone traité avec {issuer}:",
+    "settlement_lag": "T+5",
+    "rows": [["currency", "Currency"], ["maturity", "Maturity"], ["underlyings", "Underlying"],
+             ["strike", "Strike"], ["frequency", "Frequency"], ["coupon", "Guaranteed Coupon"]],
+    "product_titles": {
+      "default": "Structured Product",
+      "AC": "Reverse Autocall with Low Strike",
+      "RC": "Reverse Convertible",
+      "BRC": "Barrier Reverse Convertible",
+      "BTB": "Beat the Benchmark",
+      "CPN": "Capital Protection Note",
+      "SN": "Shark Note",
+      "DC": "Discount Certificate",
+      "BC": "Bonus Certificate",
+      "TRK": "Tracker Certificate",
+      "CLN": "Credit-Linked Note"
+    },
+    "style": {
+      "font": "Segoe UI, Arial, sans-serif",
+      "text": "#222222",
+      "accent": "#E8622A",
+      "title_background": "#F2F2F2",
+      "border": "#DDDDDD"
+    }
+  },
+
+  "issuers": [
+    {"code": "TCM",  "patterns": ["TCM[-\\s]*Collateralised", "Collateral\\s*Provider\\s*\\(TCM\\)", "TCM\\s*Security\\s*Agreement"], "priority": true},
+    {"code": "OPS",  "patterns": ["Opus\\s*\\(Public\\)\\s*Chartered\\s*Issuance"], "priority": true},
+    {"code": "CORN", "patterns": ["Corn[èe]r\\s*Bank"]},
+    {"code": "BIL",  "patterns": ["Banque\\s*Internationale\\s*[àa]\\s*Luxembourg"]},
+    {"code": "RAF",  "patterns": ["Raiffeisen"]},
+    {"code": "BOFA", "patterns": ["Merrill\\s*Lynch", "Bank\\s*of\\s*America", "\\bBofA\\b"]},
+    {"code": "GS",   "patterns": ["Goldman\\s*Sachs"]},
+    {"code": "BNP",  "patterns": ["BNP\\s*Paribas"]},
+    {"code": "SG",   "patterns": ["Soci[ée]t[ée]\\s*G[ée]n[ée]rale", "SG\\s*Issuer"]},
+    {"code": "EFG",  "patterns": ["EFG\\s*International", "EFG\\s*Bank", "\\bEFG\\b"]},
+    {"code": "JB",   "patterns": ["Julius\\s*B(?:ae|ä|a)r"]},
+    {"code": "POST", "patterns": ["Post\\s*Finance"]},
+    {"code": "AKB",  "patterns": ["Aargauische\\s*Kantonalbank"]},
+    {"code": "UBS",  "patterns": ["\\bUBS\\b"]},
+    {"code": "VON",  "patterns": ["Vontobel"]},
+    {"code": "CITI", "patterns": ["Citigroup", "\\bCiti\\b"]},
+    {"code": "BARC", "patterns": ["Barclays"]},
+    {"code": "STAN", "patterns": ["Standard\\s*Chartered"]},
+    {"code": "JPM",  "patterns": ["J\\.?P\\.?\\s*Morgan", "JPMorgan"]}
+  ],
+
+  "_product_types_comment": "Checked in order; FIRST MATCH WINS, and the order is the rule, not a detail. The desk names a sheet after its early-redemption FEATURE, not after its SSPA base payoff: across the 65 reference sheets the SSPA code says 1220 (Reverse Convertible) on 45 sheets the desk called AC, 1230 (Barrier Reverse Convertible) on 5 more it also called AC, and 1260 (Express) on 2 more. Not one 1230 sheet was ever named BRC. So AC must be tested before BRC and RC: an autocallable barrier reverse convertible is AC. BTB and SN come before AC because a Beat-the-Benchmark or Shark note is also autocallable but keeps its own code. BRC and RC are reached only when nothing autocallable was found. 'coupon_style' fills the coupon slot of the name differently and flags it: 'benchmark' = 'SPX 12.50%', 'capital_protection' = '122% - 90% KG -'. 'coupon_note' flags the coupon for manual check. 'verified' = confirmed by reference examples.",
+  "product_types": [
+    {"code": "BTB", "verified": true,  "patterns": ["Beat\\s*the\\s*Benchmark", "BENCHMARK\\s*UNDERLYING", "Benchmark\\s*Performance", "Name\\s*of\\s*the\\s*Benchmark"],
+     "coupon_style": "benchmark"},
+    {"code": "SN",  "verified": false, "patterns": ["Shark\\s*Note", "Shark\\s*Fin"],
+     "coupon_note": "SharkNote: coupon convention not confirmed yet, please check"},
+    {"code": "AC",  "verified": true,  "patterns": ["Autocall", "Auto-Callable", "Automatic\\s*Early\\s*Redemption", "Express\\s*Certificate", "SSPA[^.]{0,40}\\b1260\\b", "Phoenix", "Knock[-\\s]*out\\s*(?:Determination|Event|Date)"]},
+    {"code": "BRC", "verified": true,  "patterns": ["Barrier\\s*Reverse\\s*Convertible", "SSPA[^.]{0,40}\\b1230\\b"]},
+    {"code": "RC",  "verified": true,  "patterns": ["Reverse\\s*Convertible", "SSPA[^.]{0,40}\\b1220\\b"]},
+    {"code": "CPN", "verified": true,  "patterns": ["Capital\\s*Protect(?:ion|ed)(?!\\s*:?\\s*No\\b)", "SSPA[^.]{0,40}\\b11[0-4]0\\b"],
+     "coupon_style": "capital_protection"},
+    {"code": "DC",  "verified": false, "patterns": ["Discount\\s*Certificate", "SSPA[^.]{0,40}\\b1200\\b"]},
+    {"code": "BC",  "verified": false, "patterns": ["Bonus\\s*Certificate", "SSPA[^.]{0,40}\\b1320\\b"]},
+    {"code": "TRK", "verified": false, "patterns": ["Tracker\\s*Certificate", "SSPA[^.]{0,40}\\b1300\\b"]},
+    {"code": "CLN", "verified": false, "patterns": ["Credit[-\\s]*Linked", "SSPA[^.]{0,40}\\b14\\d0\\b"]}
+  ],
+
+  "_issuer_call_comment": "A product the ISSUER may redeem early at its own discretion, with no trigger level -- 'Callable', not 'Autocallable'. The reference set holds three, and the desk named them three different ways: SG's 'Callable Reverse Convertible' became AC, JPM's 'Callable Barrier Reverse Convertible' became BRC, and Corner's 'Multi Reverse Convertible / Callable / LowStrike' became RC. The first and the last are the same structure (SSPA 1220, low strike, issuer call) under two different codes, so there is no convention to follow here. Merle therefore keeps the code the SSPA base payoff gives and asks, rather than guessing. Only checked when the product type resolved to one of 'applies_to' -- an autocallable sheet is AC whatever else it says, and the label 'Issuer Call: Not Applicable' must not count as evidence, which is why the bare label is not a pattern.",
+  "issuer_call": {
+    "patterns": ["\\bCallable\\b", "at\\s*the\\s*option\\s*of\\s*the\\s*Issuer", "Issuer\\s*has\\s*the\\s*(?:sole\\s*)?right[\\s\\S]{0,60}?(?:redeem|Redempt)"],
+    "applies_to": ["RC", "BRC", "DC", "BC", "TRK"],
+    "warning": "Issuer-callable, not autocallable: the desk has named these AC, BRC and RC. Please confirm the code"
+  },
+
+  "_indices_comment": "Bloomberg index tickers; name patterns are used when the sheet gives no Bloomberg code.",
+  "indices": [
+    {"ticker": "SX5E",   "patterns": ["EURO\\s*STOXX\\s*50"]},
+    {"ticker": "SX7E",   "patterns": ["EURO\\s*STOXX\\s*Banks"]},
+    {"ticker": "SXXP",   "patterns": ["STOXX\\s*Europe\\s*600"]},
+    {"ticker": "NKY",    "patterns": ["NIKKEI\\s*225"]},
+    {"ticker": "TPX",    "patterns": ["TOPIX"]},
+    {"ticker": "SPX",    "patterns": ["S&P\\s*500"]},
+    {"ticker": "NDX",    "patterns": ["NASDAQ[-\\s]*100"]},
+    {"ticker": "RTY",    "patterns": ["Russell\\s*2000"]},
+    {"ticker": "INDU",   "patterns": ["Dow\\s*Jones\\s*Industrial"]},
+    {"ticker": "SMI",    "patterns": ["Swiss\\s*Market\\s*Index", "\\bSMI\\b"]},
+    {"ticker": "DAX",    "patterns": ["\\bDAX\\b"]},
+    {"ticker": "CAC",    "patterns": ["CAC\\s*40"]},
+    {"ticker": "UKX",    "patterns": ["FTSE\\s*100"]},
+    {"ticker": "FTSEMIB","patterns": ["FTSE\\s*MIB"]},
+    {"ticker": "IBEX",   "patterns": ["IBEX\\s*35"]},
+    {"ticker": "HSCEI",  "patterns": ["Hang\\s*Seng\\s*China\\s*Enterprises"]},
+    {"ticker": "HSI",    "patterns": ["Hang\\s*Seng\\s*Index"]},
+    {"ticker": "AS51",   "patterns": ["S&P/ASX\\s*200"]},
+    {"ticker": "KOSPI2", "patterns": ["KOSPI\\s*200"]}
+  ],
+
+  "_exchange_codes_comment": "Bloomberg exchange suffixes stripped from equity tickers (e.g. 'AIR FP' -> 'AIR').",
+  "exchange_codes": ["UN", "UW", "UQ", "UA", "UP", "UR", "UV", "US", "SW", "SE", "VX", "FP", "GY", "GR", "GF", "NA", "BB", "LN", "IM", "SM", "SQ", "JT", "JP", "AT", "AU", "HK", "CN", "CT", "KS", "DC", "FH", "NO", "SS", "ID", "PL", "AV", "TT", "SP", "CH", "C1", "C2"],
+
+  "currencies": ["USD", "EUR", "CHF", "GBP", "JPY", "AUD", "CAD", "HKD", "SGD", "SEK", "NOK", "DKK", "CNH", "CNY", "NZD", "ZAR", "PLN", "CZK", "HUF", "MXN", "BRL", "TRY", "ILS", "AED"]
+}
