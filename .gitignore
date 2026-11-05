@@ -8,7 +8,7 @@ __pycache__/
 .input/
 .output/
 _tt_build/
-fonts/
+/fonts/
 
 # Price caches written by the proposal skills
 .market_cache.json
