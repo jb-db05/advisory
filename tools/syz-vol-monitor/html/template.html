@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SYZ Vol Monitor</title>
+<style>
+@font-face{font-family:NSans;src:url(data:font/ttf;base64,__FONT_REG__);font-weight:400}
+@font-face{font-family:NSans;src:url(data:font/ttf;base64,__FONT_BOLD__);font-weight:700}
+@font-face{font-family:NTitle;src:url(data:font/ttf;base64,__FONT_TITLE__);font-weight:700}
+:root{--orange:#FF6C0E;--amber:#FFA400;--ink:#202945;--blue:#4B5F80;--muted:#66708A;--rule:#A6A9B5;
+      --faint:#E4E7EE;--mint:#3BAF90;--mulb:#AC5D85;--paper:#FFFFFF}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.45 NSans,'Nunito Sans',Arial,sans-serif}
+.wrap{max-width:1400px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-left,0px)) 40px max(16px,env(safe-area-inset-right,0px))}
+header{position:relative;border-bottom:.6pt solid var(--rule);padding-bottom:12px}
+.logo{position:absolute;top:0;right:0;width:88px}
+.eyebrow{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--blue);margin:0}
+h1{font:700 32px/1.1 NTitle,NSans,sans-serif;color:var(--orange);margin:10px 0 2px}
+.sub{font-size:15px;margin:0 0 8px}
+.status{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 18px}
+.status b{color:var(--ink)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mint);margin-right:6px}
+.dot.warn{background:var(--orange)}
+.load{border:1.5px dashed var(--rule);border-radius:10px;padding:18px 20px;margin:16px 0;display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center}
+.load.drag{border-color:var(--orange);background:#FFF6EF}
+.load p{margin:0;flex:1 1 320px}
+nav{display:flex;gap:22px;margin:14px 0 6px;border-bottom:.6pt solid var(--faint);flex-wrap:wrap}
+nav button{background:none;border:0;padding:8px 0;font:700 14px NSans,sans-serif;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}
+nav button.on{color:var(--ink);border-bottom-color:var(--orange)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.count{color:var(--orange)}
+.tools{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:10px 0}
+.tools label,.form label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);font-weight:700}
+select,input{font:14px NSans,sans-serif;color:var(--ink);border:.6pt solid var(--rule);border-radius:4px;padding:5px 8px;background:#fff}
+input[type=number]{width:90px}
+h2{font:700 16px NTitle,NSans,sans-serif;color:var(--orange);margin:18px 0 6px}
+.note{font-size:12px;color:var(--muted);margin:4px 0}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}
+@media (max-width:980px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.tbl{overflow-x:auto}.tbl.tall{max-height:70vh;overflow-y:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th{position:sticky;top:0;background:#fff;text-align:right;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+   color:var(--muted);font-weight:700;border-bottom:.6pt solid var(--rule);padding:6px 8px;cursor:pointer;white-space:nowrap}
+th:hover{color:var(--ink)}
+td{text-align:right;padding:5px 8px;border-bottom:.4pt solid var(--faint);white-space:nowrap}
+th.l,td.l{text-align:left}
+#rankFocus th,#rankFocus td,#rankMaster th,#rankMaster td{padding:4px 5px}
+#rankFocus td.l,#rankMaster td.l{white-space:normal}
+#rankFocus td.name,#rankMaster td.name{min-width:120px}
+#rankFocus .tk,#rankMaster .tk,#rankFocus td[class*="t-"],#rankMaster td[class*="t-"]{white-space:nowrap}
+td.name{font-weight:700;white-space:normal;min-width:150px}
+.tk{color:var(--muted);font-size:12px}.nt{text-transform:none}
+.t-Veryhigh{color:var(--orange);font-weight:700}.t-High{color:var(--amber);font-weight:700}
+.t-Medium{color:var(--blue)}.t-Low{color:var(--muted)}
+.up{color:var(--mint)}.dn{color:var(--mulb)}.hit{font-weight:700}
+.warn{color:var(--orange);font-weight:700}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px 18px;max-width:900px}
+.form div{display:flex;flex-direction:column;gap:3px}
+.btn{font:700 13px NSans,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--orange);
+     border:0;border-radius:100px;padding:8px 18px;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--orange);border:1px solid var(--orange)}
+.msg{font-size:13px;color:var(--blue);margin-left:10px}
+.rm{background:none;border:0;padding:0;font:12px NSans,sans-serif;color:var(--muted);cursor:pointer;text-decoration:underline}
+.rm:hover{color:var(--mulb)}.rm.arm{color:#fff;background:var(--mulb);border-radius:100px;padding:2px 10px;text-decoration:none;font-weight:700}
+.listmsg{font-size:13px;color:var(--blue);min-height:18px;margin:6px 0}
+ol.steps{margin:6px 0 0;padding-left:20px;max-width:900px}ol.steps li{margin:3px 0}
+code{background:#F3F5FA;padding:1px 5px;border-radius:3px;font-size:12px}
+pre{background:#F3F5FA;padding:10px 12px;border-radius:6px;font-size:12px;overflow-x:auto;max-width:900px}
+#toasts{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px;z-index:9}
+.toast{background:var(--ink);color:#fff;border-radius:8px;padding:10px 14px;max-width:340px;font-size:13px}
+.toast b{color:var(--amber)}
+footer{margin-top:26px;font-size:11px;color:var(--muted);border-top:.6pt solid var(--faint);padding-top:8px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <img class="logo" src="data:image/svg+xml;base64,__LOGO__" alt="Syz Private Banking">
+  <p class="eyebrow">Syz Private Banking · Advisory</p>
+  <h1>Vol Monitor</h1>
+  <p class="sub">Implied-vol ranking and big-move alerts, read from SYZ_ADVISORY_VOL.xlsx (no Python needed)</p>
+  <div class="status" id="status">No file loaded yet.</div>
+</header>
+
+<div class="load" id="drop">
+  <p>Open <b>SYZ_ADVISORY_VOL.xlsx</b> after Bloomberg has refreshed it in Excel. <b>Watch the file</b> (Edge or Chrome)
+    updates this page every time Excel saves it. The file is read on this PC only; nothing is uploaded.</p>
+  <button class="btn" id="watchBtn" type="button">Watch the file</button>
+  <label class="btn ghost" for="fileIn" style="display:inline-block">Open once</label>
+  <input type="file" id="fileIn" accept=".xlsx,.xlsm" hidden>
+  <button class="btn ghost" id="notifBtn" type="button">Enable pop-ups</button>
+</div>
+
+<nav id="tabs">
+  <button data-tab="ranking" class="on">Ranking</button>
+  <button data-tab="alerts">Alerts <span class="count" id="ac"></span></button>
+  <button data-tab="focus">Focus list</button>
+  <button data-tab="master">Master list</button>
+  <button data-tab="settings">Settings and help</button>
+</nav>
+
+<div class="tools" id="filters">
+  <div><label for="fRegion">Region</label><br>
+    <select id="fRegion"><option value="">All regions</option><option>North America</option>
+      <option>Switzerland</option><option>Europe ex-Switzerland</option><option>Emerging Markets &amp; RoW</option></select></div>
+  <div><label for="fTier">Tier</label><br>
+    <select id="fTier"><option value="">All tiers</option><option>Very high</option><option>High</option>
+      <option>Medium</option><option>Low</option></select></div>
+  <div><label for="fSearch">Search</label><br><input id="fSearch" placeholder="Name or ticker"></div>
+</div>
+
+<section id="ranking">
+  <p class="note">Highest 3-month implied vol first. Stocks without an implied vol on Bloomberg are left out. Click a column to sort.</p>
+  <div class="grid2">
+    <div><h2>Focus list</h2><div class="tbl tall" id="rankFocus"></div></div>
+    <div><h2>Master list</h2><div class="tbl tall" id="rankMaster"></div></div>
+  </div>
+</section>
+<section id="alerts" hidden>
+  <p class="note" id="alertRule"></p>
+  <h2>Flagged now</h2><div class="tbl" id="alertNow"></div>
+  <h2>Today's alert log</h2>
+  <p class="note">One line per stock per day, as the alert was first seen by this page (kept in this browser).</p>
+  <div class="tbl" id="alertLog"></div>
+</section>
+<section id="focus" hidden>
+  <p class="note">Remove hides a stock on this page (second click confirms); restore it under Settings. To add a stock, add a row in the Excel file (see Settings and help).</p>
+  <div class="listmsg" id="focusMsg"></div><div class="tbl tall" id="focusTbl"></div></section>
+<section id="master" hidden>
+  <p class="note">Remove hides a stock on this page (second click confirms); restore it under Settings. To add a stock, add a row in the Excel file (see Settings and help).</p>
+  <div class="listmsg" id="masterMsg"></div><div class="tbl tall" id="masterTbl"></div></section>
+
+<section id="settings" hidden>
+  <h2>Vol tiers (IV 3M, %)</h2>
+  <div class="form">
+    <div><label for="s_medium">Medium from</label><input type="number" step="any" id="s_medium"></div>
+    <div><label for="s_high">High from</label><input type="number" step="any" id="s_high"></div>
+    <div><label for="s_very_high">Very high from</label><input type="number" step="any" id="s_very_high"></div>
+  </div>
+  <h2>Alerts</h2>
+  <div class="form">
+    <div><label for="s_daily_pct">Daily move (%, up or down)</label><input type="number" step="any" id="s_daily_pct"></div>
+    <div><label for="s_sigma">Move in σ (today vs IV 3M)</label><input type="number" step="any" id="s_sigma"></div>
+    <div><label for="s_five_day_pct">5-day move (%)</label><input type="number" step="any" id="s_five_day_pct"></div>
+    <div><label for="s_watch_seconds">Check the file every (s)</label><input type="number" step="1" id="s_watch_seconds"></div>
+  </div>
+  <p><button class="btn" id="saveBtn" type="button">Save settings</button><span class="msg" id="saveMsg"></span></p>
+
+  <h2>Removed stocks</h2>
+  <div id="hiddenList" class="note"></div>
+
+  <h2>Add a stock</h2>
+  <p class="note">The Bloomberg data comes from Excel, so a new stock is added in the workbook:</p>
+  <ol class="steps">
+    <li>Open SYZ_ADVISORY_VOL.xlsx on the terminal, sheet <b>Focus list</b> or <b>Master list</b>.</li>
+    <li>In the first empty row, type the name and the Bloomberg ticker (and the ISIN on the master list).</li>
+    <li>Copy the formulas from the row above into the new row, then save (Ctrl + S).</li>
+  </ol>
+
+  <h2>Keep it live</h2>
+  <p class="note">This page updates each time Excel saves the file. To save it automatically every minute while it is open,
+    add this macro once (Alt + F11 → Insert → Module, paste, then Alt + F8 → <code>SyzAutoSave</code> → Run; keep the file as .xlsm):</p>
+  <pre>Sub SyzAutoSave()
+    ThisWorkbook.Save
+    Application.OnTime Now + TimeSerial(0, 1, 0), "SyzAutoSave"
+End Sub</pre>
+  <p class="note">Currency is inferred from the Bloomberg exchange code (SW = CHF, LN = GBp, …), as the workbook does not
+    store it. For Bloomberg's own value, add a column with <code>=BDP(ticker,"CRNCY")</code> headed <b>Ccy</b> on the
+    Master list or Focus list: this page will use it.</p>
+</section>
+
+<footer>Data: Bloomberg values saved in the Excel workbook on this terminal, for the logged-in user only. Do not share this page's data. Vols in %. Expected daily move = IV 3M / √252.</footer>
+</div>
+<div id="toasts" aria-live="polite"></div>
+
+<script>__XLSX_LIB__</script>
+<script>
+const $ = s => document.querySelector(s);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('syzvol.' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('syzvol.' + k, JSON.stringify(v)); } catch (e) {} },
+};
+const DEFAULTS = {tiers: {medium: 20, high: 30, very_high: 40},
+                  alerts: {daily_pct: 5, sigma: 2.5, five_day_pct: 10, watch_seconds: 30}};
+let CFG = store.get('cfg', DEFAULTS);
+CFG = {tiers: {...DEFAULTS.tiers, ...(CFG.tiers || {})}, alerts: {...DEFAULTS.alerts, ...(CFG.alerts || {})}};
+let HIDDEN = new Set(store.get('hidden', []));
+let RAW = null, S = null, sortState = {}, fileHandle = null, lastMod = 0, watchTimer = null, fileName = '', loadedAt = '';
+
+/* ---------------------------------------------------------------- reading the workbook */
+const EXCHANGE_CCY = {US:'USD',CN:'CAD',SW:'CHF',LN:'GBp',GY:'EUR',GR:'EUR',FP:'EUR',NA:'EUR',IM:'EUR',SM:'EUR',BB:'EUR',
+  PL:'EUR',FH:'EUR',ID:'EUR',AV:'EUR',DC:'DKK',SS:'SEK',PW:'PLN',HK:'HKD',JP:'JPY',TT:'TWD',KS:'KRW',IN:'INR',CH:'CNY',
+  AU:'AUD',SP:'SGD',IJ:'IDR',PM:'PHP',BZ:'BRL',MM:'MXN',SJ:'ZAr',UH:'AED',DH:'AED',AB:'SAR'};
+const ccyFromTicker = t => { const p = String(t || '').trim().split(/\s+/); return p.length >= 3 ? (EXCHANGE_CCY[p[p.length - 2]] || '') : ''; };
+
+function cell(ws, r, c) {           // value of a cell, null for empty, errors and Bloomberg "#N/A ..." strings
+  const x = ws[XLSX.utils.encode_cell({r, c})];
+  if (!x || x.t === 'e' || x.v === undefined || x.v === null) return null;
+  if (typeof x.v === 'string') { const s = x.v.trim(); return (s === '' || s.startsWith('#')) ? null : s; }
+  return x.v;
+}
+const num = v => (typeof v === 'number' && isFinite(v)) ? v : null;
+function findCol(ws, headerRow, label) {
+  const rng = XLSX.utils.decode_range(ws['!ref']);
+  for (let c = rng.s.c; c <= rng.e.c; c++) { const v = cell(ws, headerRow, c); if (v && String(v).trim().toLowerCase() === label) return c; }
+  return -1;
+}
+
+function parseWorkbook(wb) {
+  const need = ['Focus list', 'Master list', 'Alerts'];
+  const miss = need.filter(n => !wb.Sheets[n]);
+  if (miss.length) throw new Error('This is not the vol workbook: missing sheet(s) ' + miss.join(', '));
+  const f = wb.Sheets['Focus list'], m = wb.Sheets['Master list'], a = wb.Sheets['Alerts'];
+  const last = ws => XLSX.utils.decode_range(ws['!ref']).e.r;
+  const fCcy = findCol(f, 3, 'ccy'), mCcy = findCol(m, 3, 'ccy');
+  const focus = [], master = [], moves = {};
+  for (let r = 4; r <= last(f); r++) {
+    const name = cell(f, r, 1), tk = cell(f, r, 4);
+    if (!name || !tk) continue;
+    focus.push({name: String(name), ticker: String(tk), region: cell(f, r, 2) || '', industry: cell(f, r, 3) || '',
+      iv3m: num(cell(f, r, 5)), iv1m: num(cell(f, r, 6)), iv12m: num(cell(f, r, 7)), hv90: num(cell(f, r, 8)),
+      cons_upside: num(cell(f, r, 12)), next_results: cell(f, r, 13) ?? '', isin: cell(f, r, 14) || '',
+      currency: (fCcy >= 0 && cell(f, r, fCcy)) || ccyFromTicker(tk)});
+  }
+  for (let r = 4; r <= last(m); r++) {
+    const name = cell(m, r, 1);
+    if (!name) continue;
+    const tk = cell(m, r, 3) || '';
+    master.push({name: String(name), isin: cell(m, r, 2) || '', ticker: String(tk), region: cell(m, r, 4) || '',
+      sector: cell(m, r, 5) || '', iv3m: num(cell(m, r, 6)), iv12m: num(cell(m, r, 7)), hv90: num(cell(m, r, 8)),
+      check: cell(m, r, 13) || (tk ? 'not found' : 'enter ticker'),
+      currency: (mCcy >= 0 && cell(m, r, mCcy)) || ccyFromTicker(tk)});
+  }
+  for (let r = 11; r <= last(a); r++) {
+    const tk = cell(a, r, 2);
+    if (!tk || moves[tk]) continue;
+    moves[tk] = {last: num(cell(a, r, 3)), chg1d: num(cell(a, r, 4)), chg5d: num(cell(a, r, 5))};
+  }
+  return {focus, master, moves};
+}
+
+/* ---------------------------------------------------------------- calculations (the workbook's formulas) */
+function tier(v) {
+  if (typeof v !== 'number') return '';
+  const t = CFG.tiers;
+  return v >= t.very_high ? 'Very high' : v >= t.high ? 'High' : v >= t.medium ? 'Medium' : 'Low';
+}
+function rank(rows) {
+  const vals = rows.map(r => r.iv3m).filter(v => typeof v === 'number');
+  rows.forEach((r, i) => {
+    const v = r.iv3m;
+    if (typeof v !== 'number') { r.rank = null; r.rank_region = null; return; }
+    r.rank = vals.filter(x => x > v).length + rows.slice(0, i).filter(p => p.iv3m === v).length + 1;
+    r.rank_region = 1 + rows.filter(p => p.region === r.region && typeof p.iv3m === 'number' && p.iv3m > v).length;
+  });
+}
+function compute() {
+  if (!RAW) return;
+  const key = (l, r) => l + '|' + r.name + '|' + r.ticker;
+  const focus = RAW.focus.filter(r => !HIDDEN.has(key('focus', r))).map(r => ({...r}));
+  const master = RAW.master.filter(r => !HIDDEN.has(key('master', r))).map(r => ({...r}));
+  const fIsins = new Set(focus.map(r => r.isin).filter(Boolean));
+  for (const r of [...focus, ...master]) {
+    r.iv_hv = (typeof r.iv3m === 'number' && typeof r.hv90 === 'number' && r.hv90) ? r.iv3m / r.hv90 : null;
+    r.tier = tier(r.iv3m);
+  }
+  master.forEach(r => r.in_focus = fIsins.has(r.isin) ? 'Yes' : '');
+  rank(focus); rank(master);
+  const th = CFG.alerts, alerts = [];
+  for (const [lst, rows] of [['Focus', focus], ['Master', master]]) {
+    for (const r of rows) {
+      if (!r.ticker) continue;
+      const mv = RAW.moves[r.ticker] || {};
+      const exp = typeof r.iv3m === 'number' ? r.iv3m / Math.sqrt(252) : null;
+      const sigma = (typeof mv.chg1d === 'number' && exp) ? mv.chg1d / exp : null;
+      const reasons = [];
+      if (typeof mv.chg1d === 'number' && Math.abs(mv.chg1d) >= th.daily_pct) reasons.push(`Today ${sgn(mv.chg1d)}%`);
+      if (typeof sigma === 'number' && Math.abs(sigma) >= th.sigma) reasons.push(`${sgn(sigma)} sigma`);
+      if (typeof mv.chg5d === 'number' && Math.abs(mv.chg5d) >= th.five_day_pct) reasons.push(`5 days ${sgn(mv.chg5d)}%`);
+      if (reasons.length) alerts.push({list: lst, name: r.name, ticker: r.ticker, currency: r.currency, last: mv.last,
+        chg1d: mv.chg1d, chg5d: mv.chg5d, iv3m: r.iv3m, exp_move: exp, sigma, size: Math.abs(sigma ?? 0),
+        reason: reasons.join('   ')});
+    }
+  }
+  S = {focus, master, alerts};
+}
+const sgn = x => (x > 0 ? '+' : '') + x.toFixed(1);
+
+/* ---------------------------------------------------------------- alert log (once per stock per day) */
+function logAlerts() {
+  const today = new Date().toISOString().slice(0, 10);
+  let log = store.get('log', []).filter(x => x.time.startsWith(today));
+  const seen = new Set(log.map(x => x.ticker));
+  const now = new Date().toLocaleString('sv-SE').slice(0, 19);
+  const fresh = S.alerts.filter(a => !seen.has(a.ticker));
+  for (const a of fresh) log.push({time: now, list: a.list, name: a.name, ticker: a.ticker,
+    chg1d: f2(a.chg1d), sigma: f2(a.sigma), chg5d: f2(a.chg5d), reason: a.reason});
+  store.set('log', log);
+  S.log = log;
+  return fresh;
+}
+const f2 = x => typeof x === 'number' ? (x > 0 ? '+' : '') + x.toFixed(2) : '';
+
+/* ---------------------------------------------------------------- rendering */
+const fmt = (x, d = 1) => (typeof x === 'number' && isFinite(x)) ? x.toFixed(d) : '';
+const pct = x => (typeof x === 'number' && isFinite(x)) ? (x > 0 ? '+' : '') + x.toFixed(1) + '%' : '';
+const cls = x => typeof x === 'number' ? (x > 0 ? 'up' : x < 0 ? 'dn' : '') : '';
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const tierCls = t => t ? 't-' + t.replace(' ', '') : '';
+function filt(rows) {
+  const r = $('#fRegion').value, t = $('#fTier').value, q = $('#fSearch').value.trim().toLowerCase();
+  return rows.filter(x => (!r || x.region === r) && (!t || x.tier === t) && (!q || (x.name + ' ' + x.ticker).toLowerCase().includes(q)));
+}
+function table(id, rows, cols, defSort) {
+  const st = sortState[id] || defSort || {};
+  if (st.key) rows = [...rows].sort((a, b) => {
+    const x = a[st.key], y = b[st.key], nx = typeof x === 'number', ny = typeof y === 'number';
+    if (nx && ny) return st.dir * (x - y); if (nx) return -1; if (ny) return 1;
+    return st.dir * String(x ?? '').localeCompare(String(y ?? ''));
+  });
+  const head = cols.map(c => `<th class="${c.l ? 'l' : ''}" data-k="${c.k}">${c.t}${st.key === c.k ? (st.dir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('');
+  const body = rows.map(r => '<tr>' + cols.map(c => `<td class="${c.l ? 'l' : ''} ${c.c ? c.c(r) : ''}">${c.f ? c.f(r) : esc(r[c.k])}</td>`).join('') + '</tr>').join('')
+    || `<tr><td class="l" colspan="${cols.length}">Nothing to show.</td></tr>`;
+  const el = $('#' + id);
+  el.innerHTML = `<table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
+  el.querySelectorAll('th').forEach(th => th.onclick = () => {
+    const k = th.dataset.k; if (k === '_rm') return;
+    const cur = sortState[id] || defSort || {};
+    sortState[id] = {key: k, dir: cur.key === k ? -cur.dir : (['name','ticker','currency','region','industry','sector','isin','list','reason','time'].includes(k) ? 1 : -1)};
+    render();
+  });
+}
+const nameCol = {k: 'name', t: 'Name', l: 1, c: () => 'name', f: r => esc(r.name)};
+const tkCol = {k: 'ticker', t: 'Ticker', l: 1, f: r => `<span class="tk">${esc(r.ticker)}</span>`};
+const ccyCol = {k: 'currency', t: 'Ccy', l: 1, f: r => esc(r.currency)};
+const tierCol = {k: 'tier', t: 'Tier', l: 1, c: r => tierCls(r.tier), f: r => esc(r.tier)};
+const rmCol = lst => ({k: '_rm', t: '', l: 1, f: r => `<button class="rm" type="button" data-list="${lst}" data-name="${esc(r.name)}" data-ticker="${esc(r.ticker)}">Remove</button>`});
+
+function render() {
+  if (!S) return;
+  const rankCols = [{k: 'rank', t: '#'}, nameCol, {k: 'region', t: 'Region', l: 1}, tkCol, ccyCol,
+    {k: 'iv3m', t: 'IV 3M', f: r => fmt(r.iv3m)}, {k: 'iv_hv', t: 'IV / HV', f: r => fmt(r.iv_hv, 2)}, tierCol];
+  const ranked = rows => filt(rows.filter(r => typeof r.iv3m === 'number'));
+  table('rankFocus', ranked(S.focus), rankCols, {key: 'rank', dir: 1});
+  table('rankMaster', ranked(S.master), rankCols, {key: 'rank', dir: 1});
+  table('focusTbl', filt(S.focus), [{k: 'rank', t: 'Rank'}, nameCol, {k: 'region', t: 'Region', l: 1},
+    {k: 'industry', t: 'Industry', l: 1}, tkCol, ccyCol, {k: 'iv3m', t: 'IV 3M', f: r => fmt(r.iv3m)},
+    {k: 'iv1m', t: 'IV 1M', f: r => fmt(r.iv1m)}, {k: 'iv12m', t: 'IV 12M', f: r => fmt(r.iv12m)},
+    {k: 'hv90', t: 'HV 3M', f: r => fmt(r.hv90)}, {k: 'iv_hv', t: 'IV / HV', f: r => fmt(r.iv_hv, 2)}, tierCol,
+    {k: 'rank_region', t: 'Rank in region'}, {k: 'cons_upside', t: 'Cons. upside', f: r => r.cons_upside === null ? '' : pct(100 * r.cons_upside)},
+    {k: 'next_results', t: 'Next results'}, {k: 'isin', t: 'ISIN', l: 1, f: r => `<span class="tk">${esc(r.isin)}</span>`}, rmCol('focus')],
+    {key: 'rank', dir: 1});
+  table('masterTbl', filt(S.master), [{k: 'rank', t: 'Rank'}, nameCol, {k: 'isin', t: 'ISIN', l: 1, f: r => `<span class="tk">${esc(r.isin)}</span>`},
+    tkCol, ccyCol, {k: 'region', t: 'Region', l: 1}, {k: 'sector', t: 'Sector', l: 1},
+    {k: 'iv3m', t: 'IV 3M', f: r => fmt(r.iv3m)}, {k: 'iv12m', t: 'IV 12M', f: r => fmt(r.iv12m)},
+    {k: 'hv90', t: 'HV 3M', f: r => fmt(r.hv90)}, {k: 'iv_hv', t: 'IV / HV', f: r => fmt(r.iv_hv, 2)}, tierCol,
+    {k: 'rank_region', t: 'Rank in region'}, {k: 'in_focus', t: 'In focus', l: 1},
+    {k: 'check', t: 'Ticker check', l: 1, c: r => r.check === 'OK' ? '' : 'warn'}, rmCol('master')], {key: 'rank', dir: 1});
+  const a = CFG.alerts, q = $('#fSearch').value.trim().toLowerCase();
+  $('#alertRule').textContent = `A stock is flagged when it moves ${a.daily_pct}% or more today, ${a.sigma} σ or more against its 3-month implied vol, or ${a.five_day_pct}% or more over 5 days (up or down).`;
+  table('alertNow', S.alerts.filter(x => !q || (x.name + ' ' + x.ticker).toLowerCase().includes(q)), [
+    {k: 'list', t: 'List', l: 1}, nameCol, tkCol, ccyCol, {k: 'last', t: 'Last', f: r => fmt(r.last, 2)},
+    {k: 'chg1d', t: 'Today', c: r => cls(r.chg1d) + (Math.abs(r.chg1d) >= a.daily_pct ? ' hit' : ''), f: r => pct(r.chg1d)},
+    {k: 'chg5d', t: '5 days', c: r => cls(r.chg5d) + (Math.abs(r.chg5d) >= a.five_day_pct ? ' hit' : ''), f: r => pct(r.chg5d)},
+    {k: 'iv3m', t: 'IV 3M', f: r => fmt(r.iv3m)}, {k: 'exp_move', t: 'Expected daily move', f: r => r.exp_move ? fmt(r.exp_move, 2) + '%' : ''},
+    {k: 'sigma', t: 'Move in <span class="nt">σ</span>', c: r => cls(r.sigma) + (Math.abs(r.sigma) >= a.sigma ? ' hit' : ''), f: r => fmt(r.sigma, 1)},
+    {k: 'reason', t: 'Reason', l: 1}], {key: 'size', dir: -1});
+  table('alertLog', S.log || [], [{k: 'time', t: 'Time', l: 1}, {k: 'list', t: 'List', l: 1}, nameCol, tkCol,
+    {k: 'chg1d', t: 'Today (%)'}, {k: 'sigma', t: '<span class="nt">σ</span>'}, {k: 'chg5d', t: '5 days (%)'}, {k: 'reason', t: 'Reason', l: 1}],
+    {key: 'time', dir: -1});
+  $('#ac').textContent = S.alerts.length ? `(${S.alerts.length})` : '';
+  const nf = S.master.filter(r => r.check !== 'OK').length, noIv = S.master.filter(r => typeof r.iv3m !== 'number').length;
+  $('#status').innerHTML = `<span><span class="dot ${fileHandle ? '' : 'warn'}"></span><b>${esc(fileName)}</b> · ${fileHandle ? 'watching, checked every ' + CFG.alerts.watch_seconds + ' s' : 'opened once (not watching)'}</span>
+    <span>File saved ${esc(new Date(lastMod).toLocaleString('sv-SE').slice(0, 16))}</span><span>Read ${esc(loadedAt)}</span>
+    <span><b>${S.alerts.length}</b> alerts now</span><span>${S.focus.length} focus · ${S.master.length} master</span>
+    ${HIDDEN.size ? `<span>${HIDDEN.size} removed</span>` : ''}${nf ? `<span class="warn">${nf} ticker check(s) to fix</span>` : ''}${noIv ? `<span>${noIv} without implied vol</span>` : ''}`;
+  renderHidden();
+}
+function renderHidden() {
+  const items = [...HIDDEN].map(k => { const [l, n, t] = k.split('|'); return `<div>${esc(n)} <span class="tk">${esc(t)}</span> (${l} list) <button class="rm" type="button" data-restore="${esc(k)}">Restore</button></div>`; });
+  $('#hiddenList').innerHTML = items.join('') || 'None.';
+}
+
+/* ---------------------------------------------------------------- loading and watching */
+async function loadBuffer(buf, name, modified) {
+  try {
+    const wb = XLSX.read(buf, {type: 'array', cellFormula: false});
+    RAW = parseWorkbook(wb);
+    fileName = name; lastMod = modified; loadedAt = new Date().toLocaleTimeString('sv-SE');
+    compute();
+    const fresh = logAlerts();
+    render();
+    popups(fresh.slice(0, 6));
+  } catch (e) {
+    $('#status').innerHTML = `<span class="warn">${esc(e.message || e)}</span>`;
+  }
+}
+async function checkFile() {
+  if (!fileHandle) return;
+  try {
+    const f = await fileHandle.getFile();
+    if (f.lastModified !== lastMod) await loadBuffer(await f.arrayBuffer(), f.name, f.lastModified);
+  } catch (e) {
+    $('#status').innerHTML = `<span class="warn">Cannot read the file right now (${esc(e.name || e)}); trying again.</span>`;
+  }
+}
+function startWatch() {
+  clearInterval(watchTimer);
+  watchTimer = setInterval(checkFile, Math.max(5, Number(CFG.alerts.watch_seconds) || 30) * 1000);
+}
+$('#watchBtn').onclick = async () => {
+  if (!window.showOpenFilePicker) {
+    $('#status').innerHTML = '<span class="warn">Watching needs Edge or Chrome. Use "Open once" in this browser.</span>'; return;
+  }
+  try {
+    [fileHandle] = await window.showOpenFilePicker({types: [{description: 'Excel workbook',
+      accept: {'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx', '.xlsm']}}]});
+    lastMod = 0; await checkFile(); startWatch();
+  } catch (e) { /* picker cancelled */ }
+};
+$('#fileIn').onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  fileHandle = null; clearInterval(watchTimer);
+  await loadBuffer(await f.arrayBuffer(), f.name, f.lastModified);
+};
+const drop = $('#drop');
+['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('drag'); }));
+['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('drag'); }));
+drop.addEventListener('drop', async e => {
+  const item = e.dataTransfer.items && e.dataTransfer.items[0];
+  if (item && item.getAsFileSystemHandle) {
+    try { const h = await item.getAsFileSystemHandle(); if (h && h.kind === 'file') { fileHandle = h; lastMod = 0; await checkFile(); startWatch(); return; } } catch (err) {}
+  }
+  const f = e.dataTransfer.files[0];
+  if (f) { fileHandle = null; await loadBuffer(await f.arrayBuffer(), f.name, f.lastModified); }
+});
+
+/* ---------------------------------------------------------------- pop-ups, tabs, settings, remove */
+function popups(list) {
+  for (const a of list) {
+    const t = document.createElement('div');
+    t.className = 'toast'; t.innerHTML = `<b>${esc(a.name)}</b> ${esc(a.ticker)}<br>${esc(a.reason)}`;
+    $('#toasts').appendChild(t); setTimeout(() => t.remove(), 15000);
+    if (window.Notification && Notification.permission === 'granted') new Notification('SYZ alert: ' + a.name, {body: a.reason});
+  }
+}
+$('#notifBtn').onclick = async () => {
+  if (!window.Notification) { $('#notifBtn').textContent = 'Pop-ups not supported'; return; }
+  const p = await Notification.requestPermission();
+  $('#notifBtn').textContent = p === 'granted' ? 'Pop-ups on' : 'Pop-ups blocked';
+};
+document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
+  document.querySelectorAll('section').forEach(s => s.hidden = s.id !== b.dataset.tab);
+  $('#filters').hidden = b.dataset.tab === 'settings';
+});
+['#fRegion', '#fTier'].forEach(s => $(s).onchange = render);
+$('#fSearch').oninput = render;
+function fillSettings() {
+  for (const k of ['medium', 'high', 'very_high']) $('#s_' + k).value = CFG.tiers[k];
+  for (const k of ['daily_pct', 'sigma', 'five_day_pct', 'watch_seconds']) $('#s_' + k).value = CFG.alerts[k];
+}
+$('#saveBtn').onclick = () => {
+  const n = k => Number($('#s_' + k).value);
+  CFG = {tiers: {medium: n('medium'), high: n('high'), very_high: n('very_high')},
+         alerts: {daily_pct: n('daily_pct'), sigma: n('sigma'), five_day_pct: n('five_day_pct'), watch_seconds: n('watch_seconds')}};
+  store.set('cfg', CFG); if (fileHandle) startWatch();
+  compute(); if (S) { logAlerts(); render(); }
+  $('#saveMsg').textContent = 'Saved'; setTimeout(() => $('#saveMsg').textContent = '', 3000);
+};
+document.addEventListener('click', e => {
+  const r = e.target.closest('[data-restore]');
+  if (r) { HIDDEN.delete(r.dataset.restore); store.set('hidden', [...HIDDEN]); compute(); render(); return; }
+  const b = e.target.closest('.rm[data-list]'); if (!b) return;
+  if (!b.classList.contains('arm')) {
+    b.classList.add('arm'); b.textContent = 'Confirm?';
+    setTimeout(() => { b.classList.remove('arm'); b.textContent = 'Remove'; }, 5000); return;
+  }
+  const lst = b.dataset.list;
+  HIDDEN.add(lst + '|' + b.dataset.name + '|' + b.dataset.ticker); store.set('hidden', [...HIDDEN]);
+  $('#' + lst + 'Msg').textContent = `Removed ${b.dataset.name} from the ${lst} list on this page (restore under Settings).`;
+  setTimeout(() => $('#' + lst + 'Msg').textContent = '', 6000);
+  compute(); render();
+});
+fillSettings();
+</script>
+</body>
+</html>

@@ -45,6 +45,10 @@ th{position:sticky;top:0;background:#fff;text-align:right;font-size:11px;letter-
 th:hover{color:var(--ink)}
 td{text-align:right;padding:5px 8px;border-bottom:.4pt solid var(--faint);white-space:nowrap}
 th.l,td.l{text-align:left}
+#rankFocus th,#rankFocus td,#rankMaster th,#rankMaster td{padding:4px 5px}
+#rankFocus td.l,#rankMaster td.l{white-space:normal}
+#rankFocus td.name,#rankMaster td.name{min-width:120px}
+#rankFocus .tk,#rankMaster .tk,#rankFocus td[class*="t-"],#rankMaster td[class*="t-"]{white-space:nowrap}
 td.name{font-weight:700;white-space:normal;min-width:150px}
 .tk{color:var(--muted);font-size:12px}
 .t-Veryhigh{color:var(--orange);font-weight:700}.t-High{color:var(--amber);font-weight:700}

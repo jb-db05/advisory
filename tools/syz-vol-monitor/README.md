@@ -17,6 +17,22 @@ web page in the Syz house style.
 The calculations reproduce the workbook exactly: on the values saved in the file, ranks, tiers,
 regions, ticker checks and the 150 alerts all match (`tests/test_engine.py`).
 
+## No Python? Use the HTML version
+
+`syz_vol_monitor.html` is one file that needs nothing installed. Excel keeps fetching the Bloomberg
+data in `SYZ_ADVISORY_VOL.xlsx` as today; the page reads the saved workbook and does the rest
+(ranking, tiers, IV / HV, currency, alerts, pop-ups, alert log, hide and restore stocks).
+
+1. Copy `syz_vol_monitor.html` to the terminal PC and double-click it (opens in Edge or Chrome).
+2. Click **Watch the file** and pick `SYZ_ADVISORY_VOL.xlsx`. The page re-reads it every 30 s and
+   updates each time Excel saves it.
+3. To keep it live, let Excel save the workbook every minute: the macro is under **Settings and help**
+   on the page.
+
+The browser cannot connect to Bloomberg directly, so the data is only as fresh as the last save of the
+workbook; new stocks are added in the workbook. The file is read on the PC, nothing is uploaded.
+To rebuild the page after changing `html/template.html`: `python html/build.py xlsx.full.min.js`.
+
 ## What you need
 
 - The Bloomberg terminal running and logged in on this PC (the Desktop API answers on
