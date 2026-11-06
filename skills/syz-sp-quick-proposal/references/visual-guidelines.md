@@ -19,6 +19,12 @@ chart rules.
   microphone, phone, location, bell, send, speaker, calculator, dollar, strategy, chess-queen,
   megaphone, ship, drop, hourglass, truck, bag, moon, lightning, headphones, brain, apple, star,
   bar-chart, paperclip, contrast, image, sun. Insert SVGs into PowerPoint with Insert → Pictures.
+- **Finance icons** (not part of the official library): 24 icons drawn in the same style, in
+  `brand/icons-finance/` with the same three colourways: coins, wallet, piggy-bank, chart-up,
+  chart-down, pie-chart, candlestick, shield, umbrella, percent, briefcase, safe, globe,
+  balance-scale, target, calendar, document, exchange, gold-bars, credit-card, euro, growth,
+  analysis, banknote. `brand/icons-finance/overview.png` shows them; `brand/make_finance_icons.py`
+  redraws them. Have the brand team approve them before external use.
 - **Fonts**: Nunito Light, Regular and Bold in `brand/fonts/` (SIL Open Font License, from Google
   Fonts), the web-safe family the guidelines name. Maison Neue, the primary family, is licensed
   and is not included: ask the brand team for it.

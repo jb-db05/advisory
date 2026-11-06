@@ -51,6 +51,10 @@ It leaves out the data display section (charts and tables).
 
 - `brand/icons/`: the 40 Syz icons as vector SVGs, in `gradient/`, `flat/` (Tiger Orange, for
   PowerPoint and Word) and `white/`; `overview.png` shows them all.
+- `brand/icons-finance/`: 24 finance icons drawn in the same style (coins, wallet, charts,
+  candlestick, shield, umbrella, percent, safe, globe, gold bars, euro and more), same three
+  colourways. Not part of the official library: have the brand team approve them before
+  external use.
 - `brand/fonts/`: Nunito Light, Regular and Bold (SIL Open Font License).
 
 Every skill carries a copy of the guidelines in `references/visual-guidelines.md`. After editing
