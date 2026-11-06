@@ -7,6 +7,7 @@ the skill makes. Structured-products skills share `syz-sp-`, so they sort togeth
 
 | Skill | What it does | Output |
 |---|---|---|
+| [`syz-brand-kit`](skills/syz-brand-kit) | Logo, icons (official and finance), fonts, colours and the visual guidelines, with helpers to export icons and place the logo on PDFs. Call it for any Syz presentation or document. | SVG, PNG, fonts |
 | [`syz-proposal-intake`](skills/syz-proposal-intake) | Entry point for proposals. Asks four questions (structured products or cross-asset, length, format, objective), reads the documents and routes to the right engine. The engines live in the SYZ Windows workspace. | PDF, Word or PowerPoint |
 | [`syz-sp-quick-proposal`](skills/syz-sp-quick-proposal) | Quick one-year proposal from a basket sheet: headline figures, one row per basket with each name's 1-year low against the protection, then two baskets per page with a chart and a table per underlying. | Short A4 PDF |
 | [`syz-sp-full-proposal`](skills/syz-sp-full-proposal) | The full "Thematic structured products portfolio" deck from a proposal sheet, term sheets or pricer pages: summary and KPIs, distance to protection, theme families, basket cards with chart, vol, correlation and swap test, income, stress and issuers. | About 14-page A4 PDF |
@@ -19,6 +20,7 @@ the skill makes. Structured-products skills share `syz-sp-`, so they sort togeth
 
 | You want… | Skill |
 |---|---|
+| The logo, an icon, the fonts or brand colours | `syz-brand-kit` |
 | Help choosing the format, or a cross-asset proposal | `syz-proposal-intake` |
 | A fast PDF of a few baskets | `syz-sp-quick-proposal` |
 | The full SP portfolio proposal deck | `syz-sp-full-proposal` |
@@ -42,23 +44,24 @@ the skill makes. Structured-products skills share `syz-sp-`, so they sort togeth
 Skills already uploaded to Claude under an old name keep that name until they are
 re-uploaded from this repo.
 
-## Visual guidelines, icons and fonts
+## Brand kit: logo, icons, fonts
 
-[`brand/visual-guidelines.md`](brand/visual-guidelines.md) is the written version of the
-*Syz Visual Guidelines* (WIP 28/05/24, source PDF in `brand/`). It is a resource for icons, fonts
-and design ideas, not a rulebook: each skill's house style, template or spec stays in charge.
-It leaves out the data display section (charts and tables).
+[`syz-brand-kit`](skills/syz-brand-kit) holds everything visual the other skills share, and can be
+called for any presentation or document:
 
-- `brand/icons/`: the 40 Syz icons as vector SVGs, in `gradient/`, `flat/` (Tiger Orange, for
-  PowerPoint and Word) and `white/`; `overview.png` shows them all.
-- `brand/icons-finance/`: 24 finance icons drawn in the same style (coins, wallet, charts,
-  candlestick, shield, umbrella, percent, safe, globe, gold bars, euro and more), same three
-  colourways. Not part of the official library: have the brand team approve them before
-  external use.
-- `brand/fonts/`: Nunito Light, Regular and Bold (SIL Open Font License).
+- `assets/logo/`: the vector logo (Private Banking lock-up and signature; gradient, mango, black,
+  white).
+- `assets/icons/syz/`: the 40 official Syz icons; `assets/icons/finance/`: 24 finance icons in the
+  same style (not official: get brand approval before external use). Each in `gradient/`, `flat/`
+  (Tiger Orange, for PowerPoint and Word) and `white/`, with an `overview.png`.
+- `assets/fonts/`: Nunito and Nunito Sans (SIL OFL).
+- `references/visual-guidelines.md`: the *Syz Visual Guidelines* (WIP 28/05/24) in writing, as a
+  resource for design ideas, minus charts; source PDF in `assets/source/`.
+- `scripts/icons.py` finds, recolours and exports icons and the logo as PNG;
+  `scripts/stamp_logo.py` places the logo sharply on PDFs.
 
-Every skill carries a copy of the guidelines in `references/visual-guidelines.md`. After editing
-the file in `brand/`, run `brand/sync.sh` from the repo root to update the copies.
+Every skill carries a copy of the guidelines in `references/`. After editing the kit's copy, run
+`skills/syz-brand-kit/scripts/sync_guidelines.sh` from the repo root.
 
 ## House rules for presentations
 

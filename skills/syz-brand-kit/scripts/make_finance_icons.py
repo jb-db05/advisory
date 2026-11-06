@@ -1,16 +1,16 @@
-"""Draw the Syz-style finance icons (brand/icons-finance/).
+"""Draw the Syz-style finance icons (assets/icons/finance/).
 
 New icons, not part of the official guidelines library, drawn to match its style (Visual
 Guidelines 5.1-5.3): filled shapes, round corners, the orange gradient left to right, details cut
-out of the shape. Written in three colourways like brand/icons/: gradient, flat (Tiger Orange)
+out of the shape. Written in three colourways like assets/icons/syz/: gradient, flat (Tiger Orange)
 and white.
 
-    python brand/make_finance_icons.py brand/icons-finance
+    python scripts/make_finance_icons.py assets/icons/finance
 """
 import sys
 from pathlib import Path
 
-OUT = Path(sys.argv[1] if len(sys.argv) > 1 else "brand/icons-finance")
+OUT = Path(sys.argv[1] if len(sys.argv) > 1 else "assets/icons/finance")
 
 
 def circle(cx, cy, r):

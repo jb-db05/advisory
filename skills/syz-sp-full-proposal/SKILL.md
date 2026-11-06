@@ -12,10 +12,10 @@ calculated by the tool.
 
 ## Visual identity
 
-[references/visual-guidelines.md](references/visual-guidelines.md) (Syz Visual Guidelines,
-May 2024) is a resource for icons, fonts and design ideas: logo use, palette, boxes, slide and
-one-pager layouts. It does not override this skill's own style, template or spec, and it does not
-cover charts. The icons (SVG) and Nunito fonts it lists are in the repo's `brand/` folder.
+For the Syz logo, icons, fonts, colours and design ideas, use the **syz-brand-kit** skill
+(`skills/syz-brand-kit`). [references/visual-guidelines.md](references/visual-guidelines.md) is a
+copy of its guidelines. They are a resource and do not override this skill's own style, template or
+spec, and they do not cover charts.
 
 ## When to use
 

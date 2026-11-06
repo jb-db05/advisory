@@ -4,8 +4,8 @@ Each icon is drawn in the PDF as clip paths filled with a gradient. We keep the 
 shapes, group them by position into the 10 x 4 grid, and write each icon twice: with the Syz
 orange gradient (Tiger Orange -> Mango Amber -> Gold Yellow) and in flat Tiger Orange.
 
-    pdftocairo -svg -f 24 -l 24 brand/SyzVisualGuidelines_WIP_V2_2.pdf /tmp/page24.svg
-    python brand/extract_icons.py /tmp/page24.svg brand/icons
+    pdftocairo -svg -f 24 -l 24 assets/source/SyzVisualGuidelines_WIP_V2_2.pdf /tmp/page24.svg
+    python scripts/extract_icons.py /tmp/page24.svg assets/icons/syz
 
 Then make the white set from flat/ (fill #FF6C0E -> #FFFFFF).
 """

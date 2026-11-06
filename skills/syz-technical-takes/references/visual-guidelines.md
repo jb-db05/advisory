@@ -9,25 +9,19 @@ differ from this document (see "Open points" at the end), keep the house style.
 It does not cover charts or data tables (section 7, Data display): each skill keeps its own
 chart rules.
 
-## Assets in this repo
+## Assets (in the syz-brand-kit skill)
 
-- **Icons**: the 40 Syz icons from the guidelines (p. 24), extracted as vector SVGs in
-  `brand/icons/` in three colourways: `gradient/` (the preferred orange gradient), `flat/`
-  (Tiger Orange, for PowerPoint and Word, which cannot fill icons with a gradient) and `white/`
-  (for dark or busy backgrounds). `brand/icons/overview.png` shows them all. Names:
-  cloud, play, presentation, home, bank, folder, archive, stack, bookmark, crown, lock, clock, key,
-  microphone, phone, location, bell, send, speaker, calculator, dollar, strategy, chess-queen,
-  megaphone, ship, drop, hourglass, truck, bag, moon, lightning, headphones, brain, apple, star,
-  bar-chart, paperclip, contrast, image, sun. Insert SVGs into PowerPoint with Insert → Pictures.
-- **Finance icons** (not part of the official library): 24 icons drawn in the same style, in
-  `brand/icons-finance/` with the same three colourways: coins, wallet, piggy-bank, chart-up,
-  chart-down, pie-chart, candlestick, shield, umbrella, percent, briefcase, safe, globe,
-  balance-scale, target, calendar, document, exchange, gold-bars, credit-card, euro, growth,
-  analysis, banknote. `brand/icons-finance/overview.png` shows them; `brand/make_finance_icons.py`
-  redraws them. Have the brand team approve them before external use.
-- **Fonts**: Nunito Light, Regular and Bold in `brand/fonts/` (SIL Open Font License, from Google
-  Fonts), the web-safe family the guidelines name. Maison Neue, the primary family, is licensed
-  and is not included: ask the brand team for it.
+- **Logo**: vector SVGs in `assets/logo/` of the syz-brand-kit skill: the Private Banking lock-up
+  (`syz-private-banking*.svg`) and the signature alone (`syz-signature*.svg`), each in the
+  gradient, mango, black and white colour ways.
+- **Icons**: the 40 official Syz icons (guidelines p. 24) in `assets/icons/syz/`, and 24 finance
+  icons drawn in the same style in `assets/icons/finance/` (not part of the official library:
+  have the brand team approve them before external use). Each set comes in `gradient/` (the
+  preferred orange gradient), `flat/` (Tiger Orange, for PowerPoint and Word, which cannot fill
+  icons with a gradient) and `white/` (dark or busy backgrounds); `overview.png` shows each set.
+- **Fonts**: Nunito Light, Regular and Bold and Nunito Sans Regular and Bold in `assets/fonts/`
+  (SIL Open Font License). Maison Neue, the primary family, is licensed and is not included:
+  ask the brand team for it.
 
 ## 1. Logo
 
