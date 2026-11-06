@@ -10,6 +10,14 @@ and write the deck as a JSON spec; a pure-Python renderer draws it on the real S
 The quality of the deck is in your editing: one idea per slide, the right chart, few words,
 every figure sourced. The renderer guarantees the format.
 
+## Visual identity
+
+Follow [references/visual-guidelines.md](references/visual-guidelines.md) (Syz Visual Guidelines,
+May 2024) for the logo, colours, typography, icons, boxes and page layout. It does not cover
+charts: keep this skill's own chart rules. Where this skill's template or spec already fixes a
+layout, that wins; use the guidelines for everything else. Its "Open points" list where the
+guidelines and current house practice differ: keep current practice on those until the team decides.
+
 ## Before you start: market data access
 
 Do this first, before reading inputs or asking anything else. The scripts fetch prices, FX rates and

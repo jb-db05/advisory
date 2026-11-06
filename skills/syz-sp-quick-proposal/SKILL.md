@@ -9,6 +9,14 @@ A bundled Python script turns a basket table into a short client PDF in the SYZ 
 get the table, add the themes, run the script, check, hand over. Every figure is read from the table
 or calculated from one year of Yahoo Finance closes; never type one in.
 
+## Visual identity
+
+Follow [references/visual-guidelines.md](references/visual-guidelines.md) (Syz Visual Guidelines,
+May 2024) for the logo, colours, typography, icons, boxes and page layout. It does not cover
+charts: keep this skill's own chart rules. Where this skill's template or spec already fixes a
+layout, that wins; use the guidelines for everything else. Its "Open points" list where the
+guidelines and current house practice differ: keep current practice on those until the team decides.
+
 ## When to use
 
 - "Could you create a 1y PDF" with a table of baskets, coupons, protection, maturity, fees, amounts.

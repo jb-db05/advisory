@@ -42,6 +42,18 @@ the skill makes. Structured-products skills share `syz-sp-`, so they sort togeth
 Skills already uploaded to Claude under an old name keep that name until they are
 re-uploaded from this repo.
 
+## Visual guidelines
+
+[`brand/visual-guidelines.md`](brand/visual-guidelines.md) is the written version of the
+*Syz Visual Guidelines* (WIP 28/05/24, source PDF in `brand/`): logo, isotype, typography,
+colour, icons, boxes, buttons, and best practice for PowerPoint and one-pagers. It leaves out the
+data display section, since each skill keeps its own chart rules. Its last section lists the
+open points where the guidelines and current house practice differ.
+
+Every skill carries a copy in `references/visual-guidelines.md` and points to it from its
+`SKILL.md`, so each skill folder stays self-contained. After editing the file in `brand/`, run
+`brand/sync.sh` from the repo root to update the copies.
+
 ## House rules for presentations
 
 - **Fonts, by default in every skill and every output** (PowerPoint, PDF, HTML,

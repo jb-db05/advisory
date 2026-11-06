@@ -10,6 +10,14 @@ inputs, run the tool, check what it extracted and matched, write the words where
 hand over. Never type a figure into the deck yourself: every number comes from the documents or is
 calculated by the tool.
 
+## Visual identity
+
+Follow [references/visual-guidelines.md](references/visual-guidelines.md) (Syz Visual Guidelines,
+May 2024) for the logo, colours, typography, icons, boxes and page layout. It does not cover
+charts: keep this skill's own chart rules. Where this skill's template or spec already fixes a
+layout, that wins; use the guidelines for everything else. Its "Open points" list where the
+guidelines and current house practice differ: keep current practice on those until the team decides.
+
 ## When to use
 
 - "Make the portfolio proposal from Proposal.xlsx", "update the SP proposal with today's prices".

@@ -10,6 +10,14 @@ script reads it, loads five years of Yahoo Finance closes and draws everything. 
 input into a sheet, check the name matches, apply the user's changes, build, review and hand over.
 Do not compute levels or draw charts yourself.
 
+## Visual identity
+
+Follow [references/visual-guidelines.md](references/visual-guidelines.md) (Syz Visual Guidelines,
+May 2024) for the logo, colours, typography, icons, boxes and page layout. It does not cover
+charts: keep this skill's own chart rules. Where this skill's template or spec already fixes a
+layout, that wins; use the guidelines for everything else. Its "Open points" list where the
+guidelines and current house practice differ: keep current practice on those until the team decides.
+
 ## Before you start: market data access
 
 Do this first, before reading inputs or asking anything else. The scripts fetch prices, FX rates and

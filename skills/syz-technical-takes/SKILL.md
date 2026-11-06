@@ -39,6 +39,14 @@ the verdict grid and the editorial rules live there.
   so the document looks right, and **tell the user in the delivery note** that the
   data is from the free feed and a licensed source is needed for client use.
 
+## Visual identity
+
+Follow [references/visual-guidelines.md](references/visual-guidelines.md) (Syz Visual Guidelines,
+May 2024) for the logo, colours, typography, icons, boxes and page layout. It does not cover
+charts: keep this skill's own chart rules. Where this skill's template or spec already fixes a
+layout, that wins; use the guidelines for everything else. Its "Open points" list where the
+guidelines and current house practice differ: keep current practice on those until the team decides.
+
 ## Before you start: market data access
 
 Do this first. The run fetches prices from Yahoo Finance and, on the first build,
