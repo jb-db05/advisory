@@ -12,11 +12,10 @@ every figure sourced. The renderer guarantees the format.
 
 ## Visual identity
 
-Follow [references/visual-guidelines.md](references/visual-guidelines.md) (Syz Visual Guidelines,
-May 2024) for the logo, colours, typography, icons, boxes and page layout. It does not cover
-charts: keep this skill's own chart rules. Where this skill's template or spec already fixes a
-layout, that wins; use the guidelines for everything else. Its "Open points" list where the
-guidelines and current house practice differ: keep current practice on those until the team decides.
+[references/visual-guidelines.md](references/visual-guidelines.md) (Syz Visual Guidelines,
+May 2024) is a resource for icons, fonts and design ideas: logo use, palette, boxes, slide and
+one-pager layouts. It does not override this skill's own style, template or spec, and it does not
+cover charts. The icons (SVG) and Nunito fonts it lists are in the repo's `brand/` folder.
 
 ## Before you start: market data access
 

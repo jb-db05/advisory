@@ -1,12 +1,27 @@
-# Syz visual guidelines (for documents and presentations)
+# Syz visual guidelines: a resource for icons, fonts and ideas
 
 Source: *Syz Visual Guidelines*, WIP 28/05/24 (`SyzVisualGuidelines_WIP_V2_2.pdf`, 46 pages).
-This file carries every rule from that document that applies to documents and presentations.
-**It does not cover charts or data tables** (section 7, Data display): each skill keeps its own
+
+**How to use it.** This is a resource to draw on, not a rulebook that overrides the house style.
+Use it for **icons**, **fonts** and **design ideas** (logo use, palette, boxes, layouts for slides
+and one-pagers). Each skill's current house style, template or spec stays in charge: where they
+differ from this document (see "Open points" at the end), keep the house style.
+It does not cover charts or data tables (section 7, Data display): each skill keeps its own
 chart rules.
 
-Where a skill's own spec or template fixes a layout (the SYZ PowerPoint template, the Technical
-Takes build spec), that wins. Use these guidelines for everything the skill does not specify.
+## Assets in this repo
+
+- **Icons**: the 40 Syz icons from the guidelines (p. 24), extracted as vector SVGs in
+  `brand/icons/` in three colourways: `gradient/` (the preferred orange gradient), `flat/`
+  (Tiger Orange, for PowerPoint and Word, which cannot fill icons with a gradient) and `white/`
+  (for dark or busy backgrounds). `brand/icons/overview.png` shows them all. Names:
+  cloud, play, presentation, home, bank, folder, archive, stack, bookmark, crown, lock, clock, key,
+  microphone, phone, location, bell, send, speaker, calculator, dollar, strategy, chess-queen,
+  megaphone, ship, drop, hourglass, truck, bag, moon, lightning, headphones, brain, apple, star,
+  bar-chart, paperclip, contrast, image, sun. Insert SVGs into PowerPoint with Insert → Pictures.
+- **Fonts**: Nunito Light, Regular and Bold in `brand/fonts/` (SIL Open Font License, from Google
+  Fonts), the web-safe family the guidelines name. Maison Neue, the primary family, is licensed
+  and is not included: ask the brand team for it.
 
 ## 1. Logo
 
