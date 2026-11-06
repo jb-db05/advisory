@@ -13,3 +13,10 @@ _tt_build/
 # Price caches written by the proposal skills
 .market_cache.json
 out/
+
+# Vol monitor: local runtime files
+tools/syz-vol-monitor/data/alert_log.csv
+tools/syz-vol-monitor/.venv/
+tools/syz-vol-monitor/data/demo_snapshot.json
+tools/syz-vol-monitor/data/focus_list.csv
+tools/syz-vol-monitor/data/master_list.csv

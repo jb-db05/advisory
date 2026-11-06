@@ -44,6 +44,12 @@ the skill makes. Structured-products skills share `syz-sp-`, so they sort togeth
 Skills already uploaded to Claude under an old name keep that name until they are
 re-uploaded from this repo.
 
+## Tools
+
+| Tool | What it does | Runs on |
+|---|---|---|
+| [`tools/syz-vol-monitor`](tools/syz-vol-monitor) | The implied-vol ranking and big-move alerts of `SYZ_ADVISORY_VOL.xlsx` without Excel: Bloomberg Desktop API, local web page, alerts by pop-up and Outlook e-mail. Stock lists and Bloomberg data are kept out of git. | The Bloomberg terminal PC |
+
 ## Brand kit: logo, icons, fonts
 
 [`syz-brand-kit`](skills/syz-brand-kit) holds everything visual the other skills share, and can be

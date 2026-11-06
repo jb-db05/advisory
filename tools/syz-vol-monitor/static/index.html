@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SYZ Vol Monitor</title>
+<style>
+@font-face{font-family:NSans;src:url('fonts/NunitoSans-Regular.ttf');font-weight:400}
+@font-face{font-family:NSans;src:url('fonts/NunitoSans-Bold.ttf');font-weight:700}
+@font-face{font-family:NTitle;src:url('fonts/Nunito-Bold.ttf');font-weight:700}
+:root{--orange:#FF6C0E;--amber:#FFA400;--ink:#202945;--blue:#4B5F80;--muted:#66708A;--rule:#A6A9B5;
+      --faint:#E4E7EE;--mint:#3BAF90;--mulb:#AC5D85;--paper:#FFFFFF}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.45 NSans,'Nunito Sans',Arial,sans-serif}
+.wrap{max-width:1400px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-left,0px)) 40px max(16px,env(safe-area-inset-right,0px))}
+header{position:relative;border-bottom:.6pt solid var(--rule);padding-bottom:12px}
+.logo{position:absolute;top:0;right:0;width:88px}
+.eyebrow{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--blue);margin:0}
+h1{font:700 32px/1.1 NTitle,NSans,sans-serif;color:var(--orange);margin:10px 0 2px}
+.sub{font-size:15px;margin:0 0 8px}
+.status{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 18px}
+.status b{color:var(--ink)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mint);margin-right:6px}
+.dot.warn{background:var(--orange)}
+nav{display:flex;gap:22px;margin:14px 0 6px;border-bottom:.6pt solid var(--faint);flex-wrap:wrap}
+nav button{background:none;border:0;padding:8px 0;font:700 14px NSans,sans-serif;color:var(--muted);cursor:pointer;
+           border-bottom:2px solid transparent}
+nav button.on{color:var(--ink);border-bottom-color:var(--orange)}
+nav button:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.count{color:var(--orange)}
+.tools{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:10px 0}
+.tools label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);font-weight:700}
+select,input{font:14px NSans,sans-serif;color:var(--ink);border:.6pt solid var(--rule);border-radius:4px;padding:5px 8px;background:#fff}
+input[type=number]{width:90px}
+h2{font:700 16px NTitle,NSans,sans-serif;color:var(--orange);margin:18px 0 6px}
+.note{font-size:12px;color:var(--muted);margin:4px 0}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}
+@media (max-width:980px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.nt{text-transform:none}
+.tbl{overflow-x:auto}
+.tbl.tall{max-height:70vh;overflow-y:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th{position:sticky;top:0;background:#fff;text-align:right;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+   color:var(--muted);font-weight:700;border-bottom:.6pt solid var(--rule);padding:6px 8px;cursor:pointer;white-space:nowrap}
+th:hover{color:var(--ink)}
+td{text-align:right;padding:5px 8px;border-bottom:.4pt solid var(--faint);white-space:nowrap}
+th.l,td.l{text-align:left}
+td.name{font-weight:700;white-space:normal;min-width:150px}
+.tk{color:var(--muted);font-size:12px}
+.t-Veryhigh{color:var(--orange);font-weight:700}.t-High{color:var(--amber);font-weight:700}
+.t-Medium{color:var(--blue)}.t-Low{color:var(--muted)}
+.up{color:var(--mint)}.dn{color:var(--mulb)}.hit{font-weight:700}
+.warn{color:var(--orange);font-weight:700}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px 18px;max-width:900px}
+.form div{display:flex;flex-direction:column;gap:3px}
+.btn{font:700 13px NSans,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--orange);
+     border:0;border-radius:100px;padding:8px 18px;cursor:pointer;margin-top:10px}
+.btn.ghost{background:#fff;color:var(--orange);border:1px solid var(--orange)}
+.msg{font-size:13px;color:var(--blue);margin-left:10px}
+#toasts{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px;z-index:9}
+.toast{background:var(--ink);color:#fff;border-radius:8px;padding:10px 14px;max-width:340px;font-size:13px}
+.toast b{color:var(--amber)}
+footer{margin-top:26px;font-size:11px;color:var(--muted);border-top:.6pt solid var(--faint);padding-top:8px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <img class="logo" src="logo.svg" alt="Syz Private Banking">
+  <p class="eyebrow">Syz Private Banking · Advisory</p>
+  <h1>Vol Monitor</h1>
+  <p class="sub">Implied-vol ranking and big-move alerts for the focus and master lists</p>
+  <div class="status" id="status">Loading…</div>
+</header>
+
+<nav id="tabs">
+  <button data-tab="ranking" class="on">Ranking</button>
+  <button data-tab="alerts">Alerts <span class="count" id="ac"></span></button>
+  <button data-tab="focus">Focus list</button>
+  <button data-tab="master">Master list</button>
+  <button data-tab="settings">Settings</button>
+</nav>
+
+<div class="tools" id="filters">
+  <div><label for="fRegion">Region</label><br>
+    <select id="fRegion"><option value="">All regions</option><option>North America</option>
+      <option>Switzerland</option><option>Europe ex-Switzerland</option><option>Emerging Markets &amp; RoW</option></select></div>
+  <div><label for="fTier">Tier</label><br>
+    <select id="fTier"><option value="">All tiers</option><option>Very high</option><option>High</option>
+      <option>Medium</option><option>Low</option></select></div>
+  <div><label for="fSearch">Search</label><br><input id="fSearch" placeholder="Name or ticker"></div>
+  <div><br><button class="btn ghost" id="notifBtn" type="button">Enable pop-ups</button></div>
+</div>
+
+<section id="ranking">
+  <p class="note">Highest 3-month implied vol first. Stocks without an implied vol on Bloomberg are left out. Click a column to sort.</p>
+  <div class="grid2">
+    <div><h2>Focus list</h2><div class="tbl tall" id="rankFocus"></div></div>
+    <div><h2>Master list</h2><div class="tbl tall" id="rankMaster"></div></div>
+  </div>
+</section>
+
+<section id="alerts" hidden>
+  <p class="note" id="alertRule"></p>
+  <h2>Flagged now</h2><div class="tbl" id="alertNow"></div>
+  <h2>Today's alert log</h2>
+  <p class="note">One line per stock per day, as the alert was first seen (kept in data/alert_log.csv).</p>
+  <div class="tbl" id="alertLog"></div>
+</section>
+
+<section id="focus" hidden><div class="tbl tall" id="focusTbl"></div></section>
+<section id="master" hidden><div class="tbl tall" id="masterTbl"></div></section>
+
+<section id="settings" hidden>
+  <h2>Vol tiers (IV 3M, %)</h2>
+  <div class="form">
+    <div><label for="s_medium">Medium from</label><input type="number" step="any" id="s_medium"></div>
+    <div><label for="s_high">High from</label><input type="number" step="any" id="s_high"></div>
+    <div><label for="s_very_high">Very high from</label><input type="number" step="any" id="s_very_high"></div>
+  </div>
+  <h2>Alerts</h2>
+  <div class="form">
+    <div><label for="s_daily_pct">Daily move (%, up or down)</label><input type="number" step="any" id="s_daily_pct"></div>
+    <div><label for="s_sigma">Move in σ (today vs IV 3M)</label><input type="number" step="any" id="s_sigma"></div>
+    <div><label for="s_five_day_pct">5-day move (%)</label><input type="number" step="any" id="s_five_day_pct"></div>
+    <div><label for="s_check_seconds">Check every (seconds)</label><input type="number" step="1" id="s_check_seconds"></div>
+    <div><label for="s_email_to">E-mail alerts to (blank = none)</label><input id="s_email_to" placeholder="name@syzgroup.com"></div>
+  </div>
+  <button class="btn" id="saveBtn" type="button">Save settings</button><span class="msg" id="saveMsg"></span>
+
+  <h2>Add a stock</h2>
+  <div class="form">
+    <div><label for="a_list">List</label><select id="a_list"><option value="focus">Focus list</option><option value="master">Master list</option></select></div>
+    <div><label for="a_name">Name</label><input id="a_name" placeholder="Nestlé"></div>
+    <div><label for="a_ticker">Bloomberg ticker</label><input id="a_ticker" placeholder="NESN SW Equity"></div>
+    <div><label for="a_isin">ISIN (master list)</label><input id="a_isin" placeholder="CH0038863350"></div>
+    <div><label for="a_region">Region (focus list)</label><select id="a_region"><option>North America</option>
+      <option>Switzerland</option><option>Europe ex-Switzerland</option><option>Emerging Markets &amp; RoW</option></select></div>
+    <div><label for="a_industry">Industry (focus list)</label><input id="a_industry"></div>
+  </div>
+  <button class="btn" id="addBtn" type="button">Add stock</button><span class="msg" id="addMsg"></span>
+  <p class="note">To remove or rename stocks, edit data/focus_list.csv or data/master_list.csv and restart the tool.</p>
+</section>
+
+<footer id="foot"></footer>
+</div>
+<div id="toasts" aria-live="polite"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+let S = null, sortState = {};
+const fmt = (x, d = 1) => (typeof x === 'number' && isFinite(x)) ? x.toFixed(d) : '';
+const pct = x => (typeof x === 'number' && isFinite(x)) ? (x > 0 ? '+' : '') + x.toFixed(1) + '%' : '';
+const cls = x => typeof x === 'number' ? (x > 0 ? 'up' : x < 0 ? 'dn' : '') : '';
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tierCls = t => t ? 't-' + t.replace(' ', '') : '';
+
+function filt(rows) {
+  const r = $('#fRegion').value, t = $('#fTier').value, q = $('#fSearch').value.trim().toLowerCase();
+  return rows.filter(x => (!r || x.region === r) && (!t || x.tier === t) &&
+    (!q || (x.name + ' ' + x.ticker).toLowerCase().includes(q)));
+}
+
+function table(id, rows, cols, defSort) {
+  const st = sortState[id] || defSort || {};
+  if (st.key) {
+    const c = cols.find(c => c.k === st.key);
+    rows = [...rows].sort((a, b) => {
+      let x = a[st.key], y = b[st.key];
+      const nx = typeof x === 'number', ny = typeof y === 'number';
+      if (nx && ny) return st.dir * (x - y);
+      if (nx) return -1; if (ny) return 1;
+      return st.dir * String(x ?? '').localeCompare(String(y ?? ''));
+    });
+  }
+  const head = cols.map(c => `<th class="${c.l ? 'l' : ''}" data-k="${c.k}" title="Sort">${c.t}${st.key === c.k ? (st.dir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('');
+  const body = rows.map(r => '<tr>' + cols.map(c => {
+    const v = c.f ? c.f(r) : esc(r[c.k]);
+    return `<td class="${c.l ? 'l' : ''} ${c.c ? c.c(r) : ''}">${v}</td>`;
+  }).join('') + '</tr>').join('') || `<tr><td class="l" colspan="${cols.length}">Nothing to show.</td></tr>`;
+  const el = $('#' + id);
+  el.innerHTML = `<table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
+  el.querySelectorAll('th').forEach(th => th.onclick = () => {
+    const k = th.dataset.k, cur = sortState[id] || defSort || {};
+    sortState[id] = {key: k, dir: cur.key === k ? -cur.dir : (['name','ticker','currency','region','industry','sector','isin','list','reason'].includes(k) ? 1 : -1)};
+    render();
+  });
+}
+
+const nameCol = {k: 'name', t: 'Name', l: 1, c: () => 'name', f: r => esc(r.name)};
+const tkCol = {k: 'ticker', t: 'Ticker', l: 1, f: r => `<span class="tk">${esc(r.ticker)}</span>`};
+const tierCol = {k: 'tier', t: 'Tier', l: 1, c: r => tierCls(r.tier), f: r => esc(r.tier)};
+const ccyCol = {k: 'currency', t: 'Ccy', l: 1, f: r => esc(r.currency)};
+
+function render() {
+  if (!S) return;
+  const rankCols = [{k: 'rank', t: '#'}, nameCol, {k: 'region', t: 'Region', l: 1}, tkCol, ccyCol,
+    {k: 'iv3m', t: 'IV 3M', f: r => fmt(r.iv3m)}, {k: 'iv_hv', t: 'IV / HV', f: r => fmt(r.iv_hv, 2)}, tierCol];
+  const ranked = rows => filt(rows.filter(r => typeof r.iv3m === 'number'));
+  table('rankFocus', ranked(S.focus), rankCols, {key: 'rank', dir: 1});
+  table('rankMaster', ranked(S.master), rankCols, {key: 'rank', dir: 1});
+
+  table('focusTbl', filt(S.focus), [{k: 'rank', t: 'Rank'}, nameCol, {k: 'region', t: 'Region', l: 1},
+    {k: 'industry', t: 'Industry', l: 1}, tkCol, ccyCol, {k: 'iv3m', t: 'IV 3M', f: r => fmt(r.iv3m)},
+    {k: 'iv1m', t: 'IV 1M', f: r => fmt(r.iv1m)}, {k: 'iv12m', t: 'IV 12M', f: r => fmt(r.iv12m)},
+    {k: 'hv90', t: 'HV 3M', f: r => fmt(r.hv90)}, {k: 'iv_hv', t: 'IV / HV', f: r => fmt(r.iv_hv, 2)}, tierCol,
+    {k: 'rank_region', t: 'Rank in region'},
+    {k: 'cons_upside', t: 'Cons. upside', f: r => r.cons_upside === '' ? '' : pct(100 * Number(r.cons_upside))},
+    {k: 'next_results', t: 'Next results'}, {k: 'isin', t: 'ISIN', l: 1, f: r => `<span class="tk">${esc(r.isin)}</span>`}],
+    {key: 'rank', dir: 1});
+
+  table('masterTbl', filt(S.master), [{k: 'rank', t: 'Rank'}, nameCol,
+    {k: 'isin', t: 'ISIN', l: 1, f: r => `<span class="tk">${esc(r.isin)}</span>`}, tkCol, ccyCol,
+    {k: 'region', t: 'Region', l: 1}, {k: 'sector', t: 'Sector', l: 1},
+    {k: 'iv3m', t: 'IV 3M', f: r => fmt(r.iv3m)}, {k: 'iv12m', t: 'IV 12M', f: r => fmt(r.iv12m)},
+    {k: 'hv90', t: 'HV 3M', f: r => fmt(r.hv90)}, {k: 'iv_hv', t: 'IV / HV', f: r => fmt(r.iv_hv, 2)}, tierCol,
+    {k: 'rank_region', t: 'Rank in region'}, {k: 'in_focus', t: 'In focus', l: 1},
+    {k: 'check', t: 'Ticker check', l: 1, c: r => r.check === 'OK' ? '' : 'warn'}], {key: 'rank', dir: 1});
+
+  const a = S.config.alerts;
+  $('#alertRule').textContent = `A stock is flagged when it moves ${a.daily_pct}% or more today, ${a.sigma} σ or more against its 3-month implied vol, or ${a.five_day_pct}% or more over 5 days (up or down). Checked every ${a.check_seconds} seconds.`;
+  const al = S.alerts.filter(x => !$('#fSearch').value || (x.name + ' ' + x.ticker).toLowerCase().includes($('#fSearch').value.toLowerCase()))
+    .map(x => ({...x, size: Math.abs(x.sigma ?? 0)}));
+  table('alertNow', al, [{k: 'list', t: 'List', l: 1}, nameCol, tkCol, ccyCol, {k: 'last', t: 'Last', f: r => fmt(r.last, 2)},
+    {k: 'chg1d', t: 'Today', c: r => cls(r.chg1d) + (Math.abs(r.chg1d) >= a.daily_pct ? ' hit' : ''), f: r => pct(r.chg1d)},
+    {k: 'chg5d', t: '5 days', c: r => cls(r.chg5d) + (Math.abs(r.chg5d) >= a.five_day_pct ? ' hit' : ''), f: r => pct(r.chg5d)},
+    {k: 'iv3m', t: 'IV 3M', f: r => fmt(r.iv3m)}, {k: 'exp_move', t: 'Expected daily move', f: r => r.exp_move ? fmt(r.exp_move, 2) + '%' : ''},
+    {k: 'sigma', t: 'Move in <span class="nt">σ</span>', c: r => cls(r.sigma) + (Math.abs(r.sigma) >= a.sigma ? ' hit' : ''), f: r => fmt(r.sigma, 1)},
+    {k: 'reason', t: 'Reason', l: 1}], {key: 'size', dir: -1});
+  table('alertLog', S.log, [{k: 'time', t: 'Time', l: 1}, {k: 'list', t: 'List', l: 1}, nameCol, tkCol,
+    {k: 'chg1d', t: 'Today (%)'}, {k: 'sigma', t: '<span class="nt">σ</span>'}, {k: 'chg5d', t: '5 days (%)'}, {k: 'reason', t: 'Reason', l: 1}],
+    {key: 'time', dir: -1});
+  $('#ac').textContent = S.alerts_total ? `(${S.alerts_total})` : '';
+}
+
+function status() {
+  const u = S.updated, live = S.status === 'connected';
+  const nf = S.master.filter(r => r.check !== 'OK').length, noIv = S.master.filter(r => typeof r.iv3m !== 'number').length;
+  $('#status').innerHTML = `<span><span class="dot ${live ? '' : 'warn'}"></span><b>${esc(S.source)}</b> · ${esc(S.status)}</span>
+    <span>Prices ${esc(u.prices || '–')}</span><span>Vols ${esc(u.vols || '–')}</span><span>Reference ${esc(u.reference || '–')}</span>
+    <span><b>${S.alerts_total}</b> alerts now</span><span>${S.focus.length} focus · ${S.master.length} master</span>
+    ${nf ? `<span class="warn">${nf} ticker check(s) to fix</span>` : ''}${noIv ? `<span>${noIv} without implied vol</span>` : ''}`;
+  $('#foot').textContent = 'Data: Bloomberg via the Desktop API of this terminal, for the logged-in user only. Do not share this page or its data outside this PC. Vols in %. Expected daily move = IV 3M / √252.';
+}
+
+function fillSettings() {
+  const c = S.config;
+  for (const k of ['medium', 'high', 'very_high']) $('#s_' + k).value = c.tiers[k];
+  for (const k of ['daily_pct', 'sigma', 'five_day_pct', 'check_seconds', 'email_to']) $('#s_' + k).value = c.alerts[k];
+}
+
+function popups(list) {
+  for (const a of list) {
+    const t = document.createElement('div');
+    t.className = 'toast'; t.innerHTML = `<b>${esc(a.name)}</b> ${esc(a.ticker)}<br>${esc(a.reason)}`;
+    $('#toasts').appendChild(t); setTimeout(() => t.remove(), 15000);
+    if (window.Notification && Notification.permission === 'granted' && S.config.alerts.browser_popup)
+      new Notification('SYZ alert: ' + a.name, {body: a.reason});
+  }
+}
+
+let first = true;
+async function load() {
+  try {
+    S = await (await fetch('/api/state')).json();
+    status(); render(); if (first) { fillSettings(); first = false; }
+    if (S.popups && S.popups.length) popups(S.popups.slice(0, 6));
+  } catch (e) { $('#status').innerHTML = '<span class="warn">Cannot reach the vol monitor: is it still running?</span>'; }
+}
+
+document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
+  document.querySelectorAll('section').forEach(s => s.hidden = s.id !== b.dataset.tab);
+  $('#filters').hidden = b.dataset.tab === 'settings';
+});
+['#fRegion', '#fTier'].forEach(s => $(s).onchange = render);
+$('#fSearch').oninput = render;
+$('#notifBtn').onclick = async () => {
+  if (!window.Notification) { $('#notifBtn').textContent = 'Pop-ups not supported'; return; }
+  const p = await Notification.requestPermission();
+  $('#notifBtn').textContent = p === 'granted' ? 'Pop-ups on' : 'Pop-ups blocked';
+};
+$('#saveBtn').onclick = async () => {
+  const num = k => Number($('#s_' + k).value);
+  await fetch('/api/settings', {method: 'POST', body: JSON.stringify({
+    tiers: {medium: num('medium'), high: num('high'), very_high: num('very_high')},
+    alerts: {daily_pct: num('daily_pct'), sigma: num('sigma'), five_day_pct: num('five_day_pct'),
+             check_seconds: num('check_seconds'), email_to: $('#s_email_to').value.trim()}})});
+  $('#saveMsg').textContent = 'Saved'; setTimeout(() => $('#saveMsg').textContent = '', 3000); load();
+};
+$('#addBtn').onclick = async () => {
+  const body = {list: $('#a_list').value, name: $('#a_name').value, ticker: $('#a_ticker').value,
+    isin: $('#a_isin').value, region: $('#a_region').value, industry: $('#a_industry').value};
+  const r = await (await fetch('/api/add', {method: 'POST', body: JSON.stringify(body)})).json();
+  $('#addMsg').textContent = r.result === 'ok' ? 'Added: values load within a minute' : r.result;
+  if (r.result === 'ok') ['#a_name', '#a_ticker', '#a_isin', '#a_industry'].forEach(s => $(s).value = '');
+  load();
+};
+load(); setInterval(load, 15000);
+</script>
+</body>
+</html>

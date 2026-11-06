@@ -1,0 +1,17 @@
+{
+  "tiers": {"medium": 20, "high": 30, "very_high": 40},
+  "alerts": {"daily_pct": 5, "sigma": 2.5, "five_day_pct": 10, "check_seconds": 60,
+             "email_to": "", "browser_popup": true},
+  "bloomberg": {
+    "host": "localhost",
+    "port": 8194,
+    "vol_refresh_minutes": 30,
+    "fields": {
+      "iv3m": "3MTH_IMPVOL_100.0%MNY_DF",
+      "iv1m": "30DAY_IMPVOL_100.0%MNY_DF",
+      "iv12m": "12MTH_IMPVOL_100.0%MNY_DF",
+      "hv90": "VOLATILITY_90D"
+    }
+  },
+  "server": {"port": 8765}
+}
