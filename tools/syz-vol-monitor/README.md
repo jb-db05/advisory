@@ -11,7 +11,8 @@ web page in the Syz house style.
   needs to be open.
 - **Focus list / Master list**: every figure per stock, including its trading currency, sortable
   and filterable; ticker check against the ISIN.
-- **Settings**: vol tiers, alert thresholds, e-mail; add a stock from the page.
+- **Settings**: vol tiers, alert thresholds, e-mail; add a stock to the focus or master list.
+  Remove a stock with the **Remove** link on its row (a second click confirms).
 
 The calculations reproduce the workbook exactly: on the values saved in the file, ranks, tiers,
 regions, ticker checks and the 150 alerts all match (`tests/test_engine.py`).
@@ -65,7 +66,7 @@ version needs Bloomberg B-PIPE or Data License.
 
 | Path | What it is |
 |---|---|
-| `data/focus_list.csv`, `data/master_list.csv` | The stock lists (taken from the workbook). Edit in a text editor or add stocks from the page. |
+| `data/focus_list.csv`, `data/master_list.csv` | The stock lists (taken from the workbook). Add and remove stocks from the page, or edit in a text editor. |
 | `data/alert_log.csv` | The alert log, written by the tool (one line per stock per day). |
 | `data/demo_snapshot.json` | Bloomberg values saved in the workbook, for demo mode. |
 | `config.json` | Tiers, alert thresholds, e-mail, Bloomberg fields and refresh times, port. |

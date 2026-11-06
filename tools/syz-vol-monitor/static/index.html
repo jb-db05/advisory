@@ -57,6 +57,9 @@ td.name{font-weight:700;white-space:normal;min-width:150px}
      border:0;border-radius:100px;padding:8px 18px;cursor:pointer;margin-top:10px}
 .btn.ghost{background:#fff;color:var(--orange);border:1px solid var(--orange)}
 .msg{font-size:13px;color:var(--blue);margin-left:10px}
+.rm{background:none;border:0;padding:0;font:12px NSans,sans-serif;color:var(--muted);cursor:pointer;text-decoration:underline}
+.rm:hover{color:var(--mulb)}.rm.arm{color:#fff;background:var(--mulb);border-radius:100px;padding:2px 10px;text-decoration:none;font-weight:700}
+.listmsg{font-size:13px;color:var(--blue);min-height:18px;margin:6px 0}
 #toasts{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px;z-index:9}
 .toast{background:var(--ink);color:#fff;border-radius:8px;padding:10px 14px;max-width:340px;font-size:13px}
 .toast b{color:var(--amber)}
@@ -109,8 +112,8 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);border-top:.6pt solid v
   <div class="tbl" id="alertLog"></div>
 </section>
 
-<section id="focus" hidden><div class="tbl tall" id="focusTbl"></div></section>
-<section id="master" hidden><div class="tbl tall" id="masterTbl"></div></section>
+<section id="focus" hidden><p class="note">To add a stock, use Settings. Remove asks for a second click to confirm.</p><div class="listmsg" id="focusMsg"></div><div class="tbl tall" id="focusTbl"></div></section>
+<section id="master" hidden><p class="note">To add a stock, use Settings. Remove asks for a second click to confirm.</p><div class="listmsg" id="masterMsg"></div><div class="tbl tall" id="masterTbl"></div></section>
 
 <section id="settings" hidden>
   <h2>Vol tiers (IV 3M, %)</h2>
@@ -140,7 +143,7 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);border-top:.6pt solid v
     <div><label for="a_industry">Industry (focus list)</label><input id="a_industry"></div>
   </div>
   <button class="btn" id="addBtn" type="button">Add stock</button><span class="msg" id="addMsg"></span>
-  <p class="note">To remove or rename stocks, edit data/focus_list.csv or data/master_list.csv and restart the tool.</p>
+  <p class="note">To remove a stock, use the Remove link on the Focus list or Master list tab. To rename one, edit data/focus_list.csv or data/master_list.csv and restart the tool.</p>
 </section>
 
 <footer id="foot"></footer>
@@ -182,6 +185,7 @@ function table(id, rows, cols, defSort) {
   const el = $('#' + id);
   el.innerHTML = `<table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
   el.querySelectorAll('th').forEach(th => th.onclick = () => {
+    if (th.dataset.k === '_rm') return;
     const k = th.dataset.k, cur = sortState[id] || defSort || {};
     sortState[id] = {key: k, dir: cur.key === k ? -cur.dir : (['name','ticker','currency','region','industry','sector','isin','list','reason'].includes(k) ? 1 : -1)};
     render();
@@ -192,6 +196,7 @@ const nameCol = {k: 'name', t: 'Name', l: 1, c: () => 'name', f: r => esc(r.name
 const tkCol = {k: 'ticker', t: 'Ticker', l: 1, f: r => `<span class="tk">${esc(r.ticker)}</span>`};
 const tierCol = {k: 'tier', t: 'Tier', l: 1, c: r => tierCls(r.tier), f: r => esc(r.tier)};
 const ccyCol = {k: 'currency', t: 'Ccy', l: 1, f: r => esc(r.currency)};
+const rmCol = lst => ({k: '_rm', t: '', l: 1, f: r => `<button class="rm" type="button" data-list="${lst}" data-name="${esc(r.name)}" data-ticker="${esc(r.ticker)}">Remove</button>`});
 
 function render() {
   if (!S) return;
@@ -207,7 +212,7 @@ function render() {
     {k: 'hv90', t: 'HV 3M', f: r => fmt(r.hv90)}, {k: 'iv_hv', t: 'IV / HV', f: r => fmt(r.iv_hv, 2)}, tierCol,
     {k: 'rank_region', t: 'Rank in region'},
     {k: 'cons_upside', t: 'Cons. upside', f: r => r.cons_upside === '' ? '' : pct(100 * Number(r.cons_upside))},
-    {k: 'next_results', t: 'Next results'}, {k: 'isin', t: 'ISIN', l: 1, f: r => `<span class="tk">${esc(r.isin)}</span>`}],
+    {k: 'next_results', t: 'Next results'}, {k: 'isin', t: 'ISIN', l: 1, f: r => `<span class="tk">${esc(r.isin)}</span>`}, rmCol('focus')],
     {key: 'rank', dir: 1});
 
   table('masterTbl', filt(S.master), [{k: 'rank', t: 'Rank'}, nameCol,
@@ -216,7 +221,7 @@ function render() {
     {k: 'iv3m', t: 'IV 3M', f: r => fmt(r.iv3m)}, {k: 'iv12m', t: 'IV 12M', f: r => fmt(r.iv12m)},
     {k: 'hv90', t: 'HV 3M', f: r => fmt(r.hv90)}, {k: 'iv_hv', t: 'IV / HV', f: r => fmt(r.iv_hv, 2)}, tierCol,
     {k: 'rank_region', t: 'Rank in region'}, {k: 'in_focus', t: 'In focus', l: 1},
-    {k: 'check', t: 'Ticker check', l: 1, c: r => r.check === 'OK' ? '' : 'warn'}], {key: 'rank', dir: 1});
+    {k: 'check', t: 'Ticker check', l: 1, c: r => r.check === 'OK' ? '' : 'warn'}, rmCol('master')], {key: 'rank', dir: 1});
 
   const a = S.config.alerts;
   $('#alertRule').textContent = `A stock is flagged when it moves ${a.daily_pct}% or more today, ${a.sigma} σ or more against its 3-month implied vol, or ${a.five_day_pct}% or more over 5 days (up or down). Checked every ${a.check_seconds} seconds.`;
@@ -297,6 +302,21 @@ $('#addBtn').onclick = async () => {
   if (r.result === 'ok') ['#a_name', '#a_ticker', '#a_isin', '#a_industry'].forEach(s => $(s).value = '');
   load();
 };
+// Remove: first click arms the button, second click (within 5 s) removes the stock
+document.addEventListener('click', async e => {
+  const b = e.target.closest('.rm'); if (!b) return;
+  if (!b.classList.contains('arm')) {
+    b.classList.add('arm'); b.textContent = 'Confirm?';
+    setTimeout(() => { b.classList.remove('arm'); b.textContent = 'Remove'; }, 5000); return;
+  }
+  const lst = b.dataset.list;
+  const r = await (await fetch('/api/remove', {method: 'POST', body: JSON.stringify(
+    {list: lst, name: b.dataset.name, ticker: b.dataset.ticker})})).json();
+  $('#' + lst + 'Msg').textContent = r.result === 'ok'
+    ? `Removed ${b.dataset.name} from the ${lst} list.` : r.result;
+  setTimeout(() => $('#' + lst + 'Msg').textContent = '', 6000);
+  load();
+});
 load(); setInterval(load, 15000);
 </script>
 </body>

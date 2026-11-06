@@ -142,6 +142,27 @@ class Monitor:
         self.source.set_tickers(self.tickers(), self.cfg)
         return "ok"
 
+    def remove_stock(self, body):
+        lst, name, ticker = body.get("list"), body.get("name"), body.get("ticker")
+        with self.lock:
+            rows, fname = (self.focus, "focus_list.csv") if lst == "focus" else (self.master, "master_list.csv")
+            if len(rows) <= 1:
+                return "cannot remove the last stock of a list"
+            if not remove_stock_from(rows, name, ticker):
+                return "not found in the list"
+            write_list(fname, rows)
+        self.source.set_tickers(self.tickers(), self.cfg)
+        return "ok"
+
+
+def remove_stock_from(rows, name, ticker):
+    """Remove the first row with this name and ticker; returns True when one was removed."""
+    for i, r in enumerate(rows):
+        if r.get("name") == name and (r.get("ticker") or "") == (ticker or ""):
+            del rows[i]
+            return True
+    return False
+
 
 def _fmt(x):
     return f"{x:+.2f}" if isinstance(x, (int, float)) else ""
@@ -194,6 +215,8 @@ def make_handler(mon: Monitor):
                 return self._send(200, b'{"result":"ok"}', "application/json")
             if self.path == "/api/add":
                 return self._send(200, json.dumps({"result": mon.add_stock(body)}).encode(), "application/json")
+            if self.path == "/api/remove":
+                return self._send(200, json.dumps({"result": mon.remove_stock(body)}).encode(), "application/json")
             self._send(404, b"not found", "text/plain")
     return H
 
